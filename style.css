@@ -1,40 +1,113 @@
-body {
-    background-color: black;
-  }
-  
-  #pacman {
-    height: 470px;
-    width: 382px;
-    border-radius: 5px;
-    margin: 20px auto;
-  }
-  
-  #shim {
-    font-family: 'Permanent Marker', cursive;
-    position: absolute;
-    visibility: hidden
-  }
-  
-  h1 {
-    font-family: 'Permanent Marker', cursive;
-    text-align: center;
-    color: yellow;
-  }
-  
-  body {
-    width: 342px;
-    margin: 0px auto;
-    font-family: sans-serif;
-  }
-  
-  a {
-    text-decoration: none;
-    color: #0000FF;
-  }
+/* Base */
+:root {
+  --max-width: 500px;
+  --pad: 16px;
+}
 
-  #instructions > a {
-    color: white !important;
-    font-family: 'Arial', sans-serif;
-    font-size: 14px;
-    text-align: center;
-  }
+* { box-sizing: border-box; }
+
+body {
+  background-color: #000;
+  margin: 0 auto;
+  padding: var(--pad);
+  font-family: sans-serif;
+  color: #fff;
+  max-width: var(--max-width);
+}
+
+#shim {
+  font-family: 'Permanent Marker', cursive;
+  position: absolute;
+  visibility: hidden;
+}
+
+h1 {
+  font-family: 'Permanent Marker', cursive;
+  text-align: center;
+  color: yellow;
+  margin: 8px 0 4px;
+}
+
+#instructions {
+  text-align: center;
+  margin: 0 0 10px;
+}
+#instructions > a {
+  color: white !important;
+  font-family: 'Arial', sans-serif;
+  font-size: 14px;
+}
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Responsive Pacman wrapper:
+   The JS uses wrapper.offsetWidth/19 to size the canvas.
+   Make the wrapper fluid so canvas scales to screen width. */
+#pacman {
+  width: 100%;
+  max-width: var(--max-width);
+  height: auto;
+  aspect-ratio: 19 / 23; /* approximate to reserve space until JS draws */
+  border-radius: 8px;
+  margin: 8px auto 12px;
+}
+
+/* Links */
+a { text-decoration: none; color: #00F; }
+
+/* Mobile Controls */
+.controls {
+  display: none;
+  margin: 18px auto 0;
+  max-width: 420px;
+  user-select: none;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin: 6px 0;
+}
+
+.ctrl-btn, .pill-btn {
+  min-width: 64px;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  background: #111;
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.ctrl-btn:active, .pill-btn:active {
+  transform: translateY(1px);
+  background: #1b1b1b;
+}
+
+.controls-row.small .pill-btn {
+  min-width: 96px;
+  font-size: 14px;
+}
+
+/* Show controls on small screens */
+@media (max-width: 768px) {
+  .controls { display: block; }
+}
+
+/* Tweak heading size on very small devices */
+@media (max-width: 400px) {
+  h1 { font-size: 20px; }
+}
+
+/* Ensure canvas area stays centered on large screens */
+@media (min-width: 769px) {
+  body { padding-top: 20px; }
+}
