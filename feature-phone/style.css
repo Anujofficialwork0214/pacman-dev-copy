@@ -1,0 +1,359 @@
+/* Feature Phone (JioPhone/KaiOS) Optimized Styles */
+:root {
+  --max-width: 240px;
+  --pad: 4px;
+  --canvas-height: 220px; /* Reduced for 240x320 screen */
+  --splash-bg: #000000;
+  --splash-yellow: #FFFF00;
+}
+
+* { 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Splash Screen Styles */
+#splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+.splash-content {
+  text-align: center;
+  padding: 20px;
+}
+
+/* Animated Pacman Loader */
+.pacman-loader {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+
+.pacman-mouth {
+  width: 0;
+  height: 0;
+  border: 30px solid var(--splash-yellow);
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: pacman-chomp 0.5s infinite;
+}
+
+@keyframes pacman-chomp {
+  0%, 100% {
+    border-top-color: var(--splash-yellow);
+    border-bottom-color: var(--splash-yellow);
+  }
+  50% {
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+  }
+}
+
+/* Splash Title */
+.splash-title {
+  font-family: Arial, sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--splash-yellow);
+  margin: 20px 0 10px;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+  letter-spacing: 4px;
+}
+
+/* Loading Dots Animation */
+.loading-dots {
+  margin: 15px 0;
+  font-size: 32px;
+  color: var(--splash-yellow);
+  letter-spacing: 5px;
+}
+
+.loading-dots span {
+  animation: loading-bounce 1.4s infinite ease-in-out;
+  display: inline-block;
+}
+
+.loading-dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes loading-bounce {
+  0%, 80%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.3);
+  }
+}
+
+/* Splash Text */
+.splash-text {
+  font-size: 14px;
+  color: #aaa;
+  margin-top: 10px;
+  font-family: Arial, sans-serif;
+  animation: loading-pulse 2s infinite;
+}
+
+@keyframes loading-pulse {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Prevent scrolling */
+}
+
+body {
+  background-color: #000;
+  margin: 0 auto;
+  padding: var(--pad);
+  font-family: Arial, sans-serif;
+  color: #fff;
+  max-width: var(--max-width);
+  font-size: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 320px; /* Fixed JioPhone height */
+}
+
+h1 {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  color: #FFFF00;
+  margin: 2px 0;
+  font-size: 14px;
+  font-weight: bold;
+  flex-shrink: 0; /* Don't compress */
+}
+
+#instructions {
+  text-align: center;
+  margin: 2px 0 4px;
+  font-size: 8px;
+  line-height: 1.2;
+  color: #ccc;
+  flex-shrink: 0; /* Don't compress */
+}
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 0;
+  flex: 1; /* Take available space */
+  min-height: 0; /* Allow shrinking */
+  overflow: hidden;
+}
+
+/* Optimized canvas size for 240x320 JioPhone */
+#pacman {
+  width: 100% !important;
+  max-width: 228px !important;
+  height: auto !important;
+  max-height: 250px !important; /* Limit height to fit screen */
+  border: none;
+  display: block;
+}
+
+#pacman canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 250px !important;
+  display: block;
+}
+
+/* Key Guide for Feature Phones - Compact for 240x320 */
+.key-guide {
+  margin: 4px auto 2px;
+  text-align: center;
+  font-size: 7px;
+  color: #aaa;
+  flex-shrink: 0; /* Don't compress */
+}
+
+.key-row {
+  margin: 2px 0;
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.key {
+  display: inline-block;
+  padding: 2px 4px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 2px;
+  font-size: 7px;
+  font-weight: bold;
+  color: #FFFF00;
+}
+
+/* Ultra-light controls - no fancy effects for feature phones */
+.controls {
+  display: none; /* No touch controls needed for feature phones */
+}
+
+/* Optimize for JioPhone 240x320 */
+@media (max-width: 240px) {
+  :root {
+    --pad: 2px;
+  }
+  
+  body {
+    padding: var(--pad);
+    font-size: 9px;
+    height: 320px; /* JioPhone exact height */
+  }
+  
+  h1 {
+    font-size: 12px;
+    margin: 1px 0;
+  }
+  
+  #instructions {
+    font-size: 7px;
+    margin: 1px 0 2px;
+  }
+  
+  #pacman {
+    max-width: 236px !important;
+    max-height: 240px !important;
+  }
+  
+  #pacman canvas {
+    max-width: 236px !important;
+    max-height: 240px !important;
+  }
+  
+  .key-guide {
+    margin: 2px auto 1px;
+    font-size: 6px;
+  }
+  
+  .key {
+    font-size: 6px;
+    padding: 1px 3px;
+  }
+  
+  .key-row {
+    gap: 3px;
+    margin: 1px 0;
+  }
+}
+
+/* Exact JioPhone dimensions */
+@media (width: 240px) and (height: 320px) {
+  body {
+    height: 320px;
+    max-height: 320px;
+    overflow: hidden;
+  }
+  
+  #pacman {
+    max-height: 230px !important;
+  }
+  
+  #pacman canvas {
+    max-height: 230px !important;
+  }
+}
+
+/* For slightly larger feature phones (320x240) */
+@media (min-width: 241px) and (max-width: 320px) {
+  :root {
+    --max-width: 280px;
+  }
+  
+  h1 {
+    font-size: 20px;
+  }
+  
+  #instructions {
+    font-size: 11px;
+  }
+  
+  #pacman {
+    max-width: 260px;
+  }
+}
+
+/* Landscape mode for feature phones */
+@media (orientation: landscape) and (max-height: 320px) {
+  body {
+    padding: 4px;
+  }
+  
+  h1 {
+    font-size: 14px;
+    margin: 2px 0;
+  }
+  
+  #instructions {
+    font-size: 8px;
+    margin: 2px 0 4px;
+  }
+  
+  .key-guide {
+    margin: 6px auto 4px;
+  }
+}
+
+/* Reduce animations and effects for performance */
+* {
+  -webkit-animation: none !important;
+  animation: none !important;
+  -webkit-transition: none !important;
+  transition: none !important;
+}
+
+/* Focus styles for D-pad navigation */
+*:focus {
+  outline: 2px solid #FFFF00;
+  outline-offset: 2px;
+}
+
+/* High contrast mode for better visibility on small screens */
+@media (prefers-contrast: high) {
+  body {
+    background-color: #000;
+  }
+  
+  h1, .key {
+    color: #FFFF00;
+  }
+  
+  #instructions {
+    color: #fff;
+  }
+}
+
+

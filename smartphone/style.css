@@ -1,0 +1,380 @@
+/* Android Smartphone Optimized Styles */
+:root {
+  --max-width: 100%;
+  --pad: 16px;
+  --primary-color: #FFFF00;
+  --bg-color: #000;
+}
+
+* { 
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+  margin: 0 auto;
+  padding: var(--pad);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #fff;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+#shim {
+  font-family: 'Permanent Marker', cursive;
+  position: absolute;
+  visibility: hidden;
+}
+
+h1 {
+  font-family: 'Permanent Marker', cursive;
+  text-align: center;
+  color: var(--primary-color);
+  margin: 8px 0 4px;
+  font-size: 24px;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+}
+
+#instructions {
+  text-align: center;
+  margin: 0 0 8px;
+  font-size: 12px;
+}
+
+#instructions > a {
+  color: #4a90e2 !important;
+  font-family: 'Arial', sans-serif;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.game-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+#pacman {
+  width: 100%;
+  max-width: min(92vw, 450px);
+  height: auto;
+  border-radius: 10px;
+  margin: 6px auto 8px;
+  box-shadow: 0 3px 15px rgba(255, 255, 0, 0.2);
+  touch-action: none; /* Prevent scrolling on touch */
+}
+
+#pacman canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
+  touch-action: none;
+}
+
+/* Mobile Controls - Compact for no scrolling */
+.controls {
+  display: block;
+  margin: 10px auto 8px;
+  max-width: 100%;
+  padding: 0 8px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.controls-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 5px 0;
+}
+
+.ctrl-btn, .pill-btn {
+  min-width: 55px;
+  min-height: 45px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 2px solid #333;
+  background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  touch-action: manipulation;
+}
+
+.ctrl-btn:active, .pill-btn:active {
+  transform: translateY(2px) scale(0.98);
+  background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.15);
+}
+
+.btn-start {
+  background: linear-gradient(145deg, #ffd700, #ffaa00);
+  color: #000;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.btn-start:active {
+  background: linear-gradient(145deg, #ffaa00, #ffd700);
+}
+
+.controls-row.small .pill-btn {
+  min-width: 85px;
+  min-height: 40px;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+/* Responsive adjustments */
+
+/* Small phones (320px - 375px) */
+@media (max-width: 375px) {
+  :root {
+    --pad: 8px;
+  }
+  
+  h1 { 
+    font-size: 18px;
+    margin: 6px 0 3px;
+  }
+  
+  #instructions {
+    font-size: 10px;
+    margin: 0 0 6px;
+  }
+  
+  #pacman {
+    max-width: min(92vw, 350px);
+    margin: 4px auto 6px;
+  }
+  
+  .controls {
+    margin: 8px auto 6px;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 48px;
+    min-height: 40px;
+    font-size: 16px;
+    padding: 6px 10px;
+  }
+  
+  .controls-row { 
+    gap: 8px;
+    margin: 4px 0;
+  }
+  
+  .controls-row.small .pill-btn {
+    min-width: 75px;
+    min-height: 36px;
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+}
+
+/* Medium phones (376px - 414px) */
+@media (min-width: 376px) and (max-width: 414px) {
+  h1 { font-size: 24px; }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 64px;
+    min-height: 50px;
+    font-size: 18px;
+  }
+  
+  .controls-row { gap: 12px; }
+}
+
+/* Large phones (415px - 767px) */
+@media (min-width: 415px) and (max-width: 767px) {
+  h1 { font-size: 26px; }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 70px;
+    min-height: 54px;
+    font-size: 20px;
+  }
+  
+  .controls-row { gap: 14px; }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+  :root {
+    --pad: 24px;
+  }
+  
+  body { 
+    padding-top: 32px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  h1 { 
+    font-size: 32px;
+    margin: 16px 0 8px;
+  }
+  
+  #instructions {
+    font-size: 14px;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 24px;
+  }
+  
+  #pacman {
+    max-width: 600px;
+  }
+  
+  .controls {
+    max-width: 500px;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 80px;
+    min-height: 60px;
+    font-size: 22px;
+    padding: 14px 18px;
+  }
+  
+  .controls-row { 
+    gap: 18px;
+    margin: 10px 0;
+  }
+  
+  .controls-row.small .pill-btn {
+    min-width: 130px;
+    font-size: 16px;
+  }
+}
+
+/* Large tablets and small desktops (1024px+) */
+@media (min-width: 1024px) {
+  body {
+    max-width: 900px;
+    padding-top: 40px;
+  }
+  
+  h1 { font-size: 36px; }
+  
+  #pacman {
+    max-width: 700px;
+  }
+  
+  .controls {
+    max-width: 600px;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 90px;
+    min-height: 65px;
+    font-size: 24px;
+  }
+}
+
+/* Landscape orientation */
+@media (orientation: landscape) {
+  body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 16px;
+    padding: 12px;
+    max-height: 100vh;
+  }
+  
+  h1 { 
+    grid-column: 1 / -1;
+    margin: 4px 0;
+    font-size: 20px;
+  }
+  
+  #instructions { 
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 10px;
+  }
+  
+  .game-wrapper {
+    grid-column: 1;
+    grid-row: 2;
+    margin: 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  #pacman {
+    max-width: 90%;
+    max-height: 70vh;
+    margin: 0 auto;
+  }
+  
+  .controls {
+    grid-column: 2;
+    grid-row: 2;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 100%;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 60px;
+    min-height: 50px;
+    font-size: 18px;
+  }
+  
+  .controls-row {
+    gap: 10px;
+    margin: 4px 0;
+  }
+}
+
+/* Small landscape phones */
+@media (orientation: landscape) and (max-height: 450px) {
+  h1 { font-size: 16px; margin: 2px 0; }
+  #instructions { font-size: 9px; }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 50px;
+    min-height: 40px;
+    font-size: 16px;
+    padding: 8px 10px;
+  }
+  
+  .controls-row { gap: 8px; margin: 3px 0; }
+  
+  #pacman {
+    max-height: 60vh;
+  }
+}
+
+/* PWA Support */
+@media (display-mode: standalone) {
+  body {
+    padding-top: max(var(--pad), env(safe-area-inset-top));
+    padding-bottom: max(var(--pad), env(safe-area-inset-bottom));
+  }
+}
+
+

@@ -2,17 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>HTML5 Pacman</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <title>Pacman - Android</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Permanent+Marker" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="shim">shim for font face</div>
-    <h1>HTML5 Pacman</h1>
+    <h1>🎮 Pacman - Android</h1>
     <p id="instructions">
-      <a href="https://github.com/qtech-internal/pacman" target="_blank"
-        >Credits: https://github.com/qtech-internal/pacman</a>
+      Use touch controls to play
     </p>
 
     <!-- Game Wrapper -->
@@ -27,15 +27,15 @@
       </div>
       <div class="controls-row">
         <button class="ctrl-btn btn-left" data-key="37" aria-label="Left">◀</button>
-        <button class="ctrl-btn btn-start" data-key="78" aria-label="Start (N)">N</button>
+        <button class="ctrl-btn btn-start" data-key="78" aria-label="Start (N)">START</button>
         <button class="ctrl-btn btn-right" data-key="39" aria-label="Right">▶</button>
       </div>
       <div class="controls-row">
         <button class="ctrl-btn btn-down" data-key="40" aria-label="Down">▼</button>
       </div>
       <div class="controls-row small">
-        <button class="pill-btn" data-key="80" aria-label="Pause/Resume (P)">Pause</button>
-        <button class="pill-btn" data-key="83" aria-label="Toggle Sound (S)">Sound</button>
+        <button class="pill-btn" data-key="80" aria-label="Pause/Resume (P)">⏸ Pause</button>
+        <button class="pill-btn" data-key="83" aria-label="Toggle Sound (S)">🔊 Sound</button>
       </div>
     </div>
 
@@ -64,7 +64,7 @@
 
         // handle tap & press-and-hold to repeat
         let repeatTimer = null;
-        const REPEAT_MS = 140;
+        const REPEAT_MS = 120; // Faster response for smartphones
 
         function startRepeat(code) {
           fireKey(code);
@@ -83,8 +83,15 @@
           btn.addEventListener('mouseup', stopRepeat);
           btn.addEventListener('mouseleave', stopRepeat);
           btn.addEventListener('click', function(e){ e.preventDefault(); });
-          // Touch
-          btn.addEventListener('touchstart', function(e){ e.preventDefault(); startRepeat(code); }, {passive:false});
+          // Touch (better for Android)
+          btn.addEventListener('touchstart', function(e){ 
+            e.preventDefault(); 
+            startRepeat(code);
+            // Haptic feedback for Android
+            if (navigator.vibrate) {
+              navigator.vibrate(10);
+            }
+          }, {passive:false});
           btn.addEventListener('touchend', function(e){ e.preventDefault(); stopRepeat(); }, {passive:false});
           btn.addEventListener('touchcancel', stopRepeat, {passive:true});
         }
@@ -96,3 +103,5 @@
     </script>
   </body>
 </html>
+
+
