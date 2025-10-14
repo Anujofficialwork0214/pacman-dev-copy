@@ -35,7 +35,7 @@
       </div>
       <div class="controls-row small">
         <button class="pill-btn" data-key="80" aria-label="Pause/Resume (P)">⏸ Pause</button>
-        <button class="pill-btn" data-key="83" aria-label="Toggle Sound (S)">🔊 Sound</button>
+        <button class="pill-btn sound-btn" data-key="83" aria-label="Toggle Sound (S)">🔊 Sound</button>
       </div>
     </div>
 
@@ -98,6 +98,24 @@
 
         document.addEventListener('DOMContentLoaded', function(){
           document.querySelectorAll('.ctrl-btn, .pill-btn').forEach(bindBtn);
+          
+          // Sound button icon toggle logic
+          const soundBtn = document.querySelector('.sound-btn');
+          if (soundBtn) {
+            // Initial state check
+            function updateSoundIcon() {
+              const isSoundDisabled = localStorage["soundDisabled"] === "true";
+              soundBtn.innerHTML = isSoundDisabled ? '🔇 Sound' : '🔊 Sound';
+            }
+            
+            // Update icon on click
+            soundBtn.addEventListener('click', function() {
+              setTimeout(updateSoundIcon, 100); // Wait for localStorage to update
+            });
+            
+            // Set initial state
+            updateSoundIcon();
+          }
         });
       })();
     </script>
