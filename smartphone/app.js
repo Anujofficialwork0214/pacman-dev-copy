@@ -906,6 +906,7 @@ var PACMAN = (function () {
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "14px Calibri";
         ctx.fillText("Score: " + user.theScore(), 30, textBase);
+        ctx.fillText("Level: " + level, 200, textBase);
     }
 
     function redrawBlock(pos) {
@@ -1018,9 +1019,13 @@ var PACMAN = (function () {
     function completedLevel() {
         setState(WAITING);
         level += 1;
-        map.reset();
-        user.newLevel();
-        startLevel();
+        map.draw(ctx);
+        dialog("🎉 Congratulations! Level " + (level - 1) + " Complete!");
+        setTimeout(function() {
+            map.reset();
+            user.newLevel();
+            startLevel();
+        }, 2000); // Show message for 2 seconds
     };
 
     function keyPress(e) { 
