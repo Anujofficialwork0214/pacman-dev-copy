@@ -837,7 +837,7 @@ var PACMAN = (function () {
             startNewGame();
         } else if (e.keyCode === KEY.S) {
             audio.disableSound();
-            localStorage["soundDisabled"] = !soundDisabled();
+            localStorage["soundDisabled"] = String(!soundDisabled());
         } else if (e.keyCode === KEY.P && state === PAUSE) {
             audio.resume();
             map.draw(ctx);

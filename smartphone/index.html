@@ -108,13 +108,23 @@
               soundBtn.innerHTML = isSoundDisabled ? '🔇 Sound' : '🔊 Sound';
             }
             
-            // Update icon on click
+            // Update icon on click and keypress
             soundBtn.addEventListener('click', function() {
-              setTimeout(updateSoundIcon, 100); // Wait for localStorage to update
+              setTimeout(updateSoundIcon, 150); // Wait for localStorage to update
+            });
+            
+            // Listen for 'S' key press to update icon
+            document.addEventListener('keydown', function(e) {
+              if (e.keyCode === 83) { // 'S' key
+                setTimeout(updateSoundIcon, 150);
+              }
             });
             
             // Set initial state
             updateSoundIcon();
+            
+            // Refresh icon every second to ensure sync
+            setInterval(updateSoundIcon, 1000);
           }
         });
       })();
