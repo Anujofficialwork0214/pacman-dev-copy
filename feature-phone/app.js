@@ -894,8 +894,12 @@ var PACMAN = (function () {
         if (e.keyCode === KEY.N) {
             startNewGame();
         } else if (e.keyCode === KEY.S) {
-            audio.disableSound();
+            // Toggle sound state first
             localStorage["soundDisabled"] = String(!soundDisabled());
+            // If sound is now disabled, stop all currently playing sounds
+            if (soundDisabled()) {
+                audio.disableSound();
+            }
         } else if (e.keyCode === KEY.P && state === PAUSE) {
             audio.resume();
             map.draw(ctx);
