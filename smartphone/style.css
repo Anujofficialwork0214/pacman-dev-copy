@@ -43,15 +43,15 @@ h1 {
   font-family: 'Permanent Marker', cursive;
   text-align: center;
   color: var(--primary-color);
-  margin: 8px 0 4px;
-  font-size: 24px;
+  margin: 6px 0 3px;
+  font-size: 22px;
   text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
 }
 
 #instructions {
   text-align: center;
-  margin: 0 0 8px;
-  font-size: 12px;
+  margin: 0 0 5px;
+  font-size: 11px;
 }
 
 #instructions > a {
@@ -73,7 +73,7 @@ h1 {
   max-width: min(92vw, 450px);
   height: auto;
   border-radius: 10px;
-  margin: 6px auto 8px;
+  margin: 4px auto 6px;
   box-shadow: 0 3px 15px rgba(255, 255, 0, 0.2);
   touch-action: none; /* Prevent scrolling on touch */
 }
@@ -89,7 +89,7 @@ h1 {
 /* Mobile Controls - Compact for no scrolling */
 .controls {
   display: block;
-  margin: 10px auto 8px;
+  margin: 6px auto 4px;
   max-width: 100%;
   padding: 0 8px;
   user-select: none;
@@ -100,20 +100,20 @@ h1 {
 .controls-row {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 5px 0;
+  gap: 8px;
+  margin: 3px 0;
 }
 
 .ctrl-btn, .pill-btn {
-  min-width: 55px;
-  min-height: 45px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  min-width: 48px;
+  min-height: 38px;
+  padding: 6px 10px;
+  border-radius: 8px;
   border: 2px solid #333;
   background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
   color: #fff;
   font-weight: 700;
-  font-size: 18px;
+  font-size: 16px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
   cursor: pointer;
   transition: all 0.15s ease;
@@ -130,7 +130,7 @@ h1 {
   background: linear-gradient(145deg, #ffd700, #ffaa00);
   color: #000;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .btn-start:active {
@@ -138,10 +138,10 @@ h1 {
 }
 
 .controls-row.small .pill-btn {
-  min-width: 85px;
-  min-height: 40px;
-  font-size: 13px;
-  padding: 6px 10px;
+  min-width: 75px;
+  min-height: 36px;
+  font-size: 12px;
+  padding: 5px 8px;
 }
 
 /* Responsive adjustments */
