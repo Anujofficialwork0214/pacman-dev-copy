@@ -906,7 +906,7 @@ var PACMAN = (function () {
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "14px Calibri";
         ctx.fillText("Score: " + user.theScore(), 30, textBase);
-        ctx.fillText("Level: " + level, 200, textBase);
+        ctx.fillText("Level: " + level, (map.width * map.blockSize) - 60, textBase);
     }
 
     function redrawBlock(pos) {
