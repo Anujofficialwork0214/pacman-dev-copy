@@ -137,11 +137,12 @@ h1 {
   background: linear-gradient(145deg, #ffaa00, #ffd700);
 }
 
-.controls-row.small .pill-btn {
-  min-width: 75px;
-  min-height: 36px;
-  font-size: 12px;
-  padding: 5px 8px;
+/* Pause and Sound buttons in middle row */
+.controls-row .pill-btn {
+  min-width: 65px;
+  min-height: 38px;
+  font-size: 11px;
+  padding: 6px 8px;
 }
 
 /* Responsive adjustments */
@@ -181,13 +182,6 @@ h1 {
   .controls-row { 
     gap: 8px;
     margin: 4px 0;
-  }
-  
-  .controls-row.small .pill-btn {
-    min-width: 75px;
-    min-height: 36px;
-    font-size: 12px;
-    padding: 5px 8px;
   }
 }
 
@@ -260,11 +254,6 @@ h1 {
   .controls-row { 
     gap: 18px;
     margin: 10px 0;
-  }
-  
-  .controls-row.small .pill-btn {
-    min-width: 130px;
-    font-size: 16px;
   }
 }
 
