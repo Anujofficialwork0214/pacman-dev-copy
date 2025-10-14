@@ -312,7 +312,7 @@ Pacman.User = function (game, map) {
 
     function initUser() {
         score = 0;
-        lives = 3;
+        lives = 2;
         newLevel();
     }
     
@@ -944,15 +944,15 @@ var PACMAN = (function () {
         
         ctx.fillStyle = "#FFFF00";
 
-        // Lives icons on the right side
-        var livesStartX = (map.width * map.blockSize) - (user.getLives() * 25) - 10;
+        // Lives icons on the right side with proper spacing
+        var livesStartX = (map.width * map.blockSize) - (user.getLives() * 20) - 5;
         for (var i = 0, len = user.getLives(); i < len; i++) {
             ctx.fillStyle = "#FFFF00";
             ctx.beginPath();
-            ctx.moveTo(livesStartX + (25 * i) + map.blockSize / 2,
+            ctx.moveTo(livesStartX + (20 * i) + map.blockSize / 2,
                        (topLeft+1) + map.blockSize / 2);
             
-            ctx.arc(livesStartX + (25 * i) + map.blockSize / 2,
+            ctx.arc(livesStartX + (20 * i) + map.blockSize / 2,
                     (topLeft+1) + map.blockSize / 2,
                     map.blockSize / 2, Math.PI * 0.25, Math.PI * 1.75, false);
             ctx.fill();

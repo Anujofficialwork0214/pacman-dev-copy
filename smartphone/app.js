@@ -312,7 +312,7 @@ Pacman.User = function (game, map) {
 
     function initUser() {
         score = 0;
-        lives = 3;
+        lives = 2;
         newLevel();
     }
     
@@ -886,13 +886,15 @@ var PACMAN = (function () {
         
         ctx.fillStyle = "#FFFF00";
 
+        // Lives icons on the right side with proper spacing
+        var livesStartX = (map.width * map.blockSize) - (user.getLives() * 20) - 5;
         for (var i = 0, len = user.getLives(); i < len; i++) {
             ctx.fillStyle = "#FFFF00";
             ctx.beginPath();
-            ctx.moveTo(150 + (25 * i) + map.blockSize / 2,
+            ctx.moveTo(livesStartX + (20 * i) + map.blockSize / 2,
                        (topLeft+1) + map.blockSize / 2);
             
-            ctx.arc(150 + (25 * i) + map.blockSize / 2,
+            ctx.arc(livesStartX + (20 * i) + map.blockSize / 2,
                     (topLeft+1) + map.blockSize / 2,
                     map.blockSize / 2, Math.PI * 0.25, Math.PI * 1.75, false);
             ctx.fill();
@@ -905,8 +907,12 @@ var PACMAN = (function () {
 
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "14px Calibri";
-        ctx.fillText("Score: " + user.theScore(), 30, textBase);
-        ctx.fillText("Level: " + level, (map.width * map.blockSize) - 60, textBase);
+        ctx.fillText("Score: " + user.theScore(), 10, textBase);
+        
+        // Center the level text
+        var levelText = "Level: " + level;
+        var levelWidth = ctx.measureText(levelText).width;
+        ctx.fillText(levelText, ((map.width * map.blockSize) - levelWidth) / 2, textBase);
     }
 
     function redrawBlock(pos) {
