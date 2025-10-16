@@ -1,5 +1,4 @@
 # Pacman - Smartphone Version (Android)
-
 ## Overview
 This version is optimized for Android smartphones with touchscreens and modern browsers.
 
