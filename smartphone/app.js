@@ -33,7 +33,8 @@ Pacman.Ghost = function (game, map, colour) {
     
     function getNewCoord(dir, current) { 
         
-        var speed  = isVunerable() ? 1 : isHidden() ? 4 : 2,
+        var baseSpeed = 2 + Math.floor((game.getLevel ? game.getLevel() : 0) / 2);
+        var speed  = isVunerable() ? 1 : isHidden() ? baseSpeed + 2 : baseSpeed,
             xSpeed = (dir === LEFT && -speed || dir === RIGHT && speed || 0),
             ySpeed = (dir === DOWN && speed || dir === UP && -speed || 0);
     
@@ -842,16 +843,23 @@ var PACMAN = (function () {
             if (soundDisabled()) {
                 audio.disableSound();
             }
-        } else if (e.keyCode === KEY.P && state === PAUSE) {
+        } else if ((e.keyCode === KEY.P || e.keyCode === KEY.ENTER) && state === PAUSE) {
+            // Resume on Enter or P button
             audio.resume();
             map.draw(ctx);
             setState(stored);
-        } else if (e.keyCode === KEY.P) {
-            stored = state;
-            setState(PAUSE);
-            audio.pause();
-            map.draw(ctx);
-            dialog("Paused");
+        } else if (e.keyCode === KEY.P || e.keyCode === KEY.ENTER) {
+            // Pause on Enter or P button (but only if game is playing, not waiting)
+            if (state === PLAYING || state === COUNTDOWN) {
+                stored = state;
+                setState(PAUSE);
+                audio.pause();
+                map.draw(ctx);
+                dialog("Paused");
+            } else if (state === WAITING) {
+                // Start game if waiting
+                startNewGame();
+            }
         } else if (state !== PAUSE) {   
             return user.keyDown(e);
         }
@@ -1062,7 +1070,7 @@ var PACMAN = (function () {
         }, map);
 
         for (i = 0, len = ghostSpecs.length; i < len; i += 1) {
-            ghost = new Pacman.Ghost({"getTick":getTick}, map, ghostSpecs[i]);
+            ghost = new Pacman.Ghost({"getTick":getTick, "getLevel": function() { return level; }}, map, ghostSpecs[i]);
             ghosts.push(ghost);
         }
         
