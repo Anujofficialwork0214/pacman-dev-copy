@@ -825,11 +825,19 @@ var PACMAN = (function () {
     }    
 
     function startNewGame() {
+        console.log("Pacman: Starting new game");
         setState(WAITING);
         level = 1;
         user.reset();
         map.reset();
         map.draw(ctx);
+        
+        // Cache ad on game start (JioGames SDK)
+        if (typeof cacheAd === 'function') {
+            cacheAd();
+            console.log("Pacman: Caching midroll ad");
+        }
+        
         startLevel();
     }
 
@@ -869,8 +877,25 @@ var PACMAN = (function () {
     function loseLife() {        
         setState(WAITING);
         user.loseLife();
+        
         if (user.getLives() > 0) {
             startLevel();
+        } else {
+            // Game Over - post score and show ad (JioGames SDK)
+            var finalScore = user.theScore();
+            console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
+            
+            // if (typeof postScore === 'function') {
+            //     postScore(finalScore);
+            //     console.log("Pacman: Score posted to SDK - " + finalScore);
+            // }
+            
+            // if (typeof showAd === 'function') {
+            //     setTimeout(function() {
+            //         showAd();
+            //         console.log("Pacman: Showing midroll ad");
+            //     }, 500);
+            // }
         }
     }
 
@@ -1292,6 +1317,23 @@ Object.prototype.clone = function () {
 
 $(function(){
   var el = document.getElementById("pacman");
+
+  // JioGames SDK Integration - Initialize
+  console.log("Pacman: Initializing JioGames SDK...");
+  
+  // Get user profile on game initialization
+  // if (typeof getUserProfile === 'function') {
+  //   getUserProfile();
+  //   console.log("Pacman: getUserProfile() called");
+  // }
+  
+  // Cache ads on game initialization
+  // setTimeout(function() {
+  //   if (typeof gameCacheAd === 'function') {
+  //     gameCacheAd();
+  //     console.log("Pacman: gameCacheAd() called - Ads caching started");
+  //   }
+  // }, 2000);
 
   if (Modernizr.canvas && Modernizr.localstorage && 
       Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
