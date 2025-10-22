@@ -1,6 +1,7 @@
 {
   "name": "Pacman Game",
   "short_name": "Pacman",
+  "package": "com.kaifoundry.pacman",
   "description": "Classic Pacman game optimized for KaiOS and JioPhone devices",
   "version": "1.0.0",
   "launch_path": "/index.html",
