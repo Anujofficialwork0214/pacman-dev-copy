@@ -9,12 +9,12 @@ console.log("=== JioGames SDK Loading... ===");
 //#region "Configuration Variables"
 var adSpotInterstitial = "zbjnq9gs";
 var adSpotRewardedVideo = "81xnt9bw";
-var packageName = "com.kaifoundry.pacman";
+var packageName = "com.kaifoundry.pacman.fp";
 var isAdReady = false;
 var isRVReady = false;
 
 var banner_ZoneKey = "l9mp2wfq";
-var bannerPackageName = "com.kaifoundry.pacman";
+var bannerPackageName = "com.kaifoundry.pacman.fp";
 //#endregion
 
 console.log("JioGames SDK: Configuration loaded");

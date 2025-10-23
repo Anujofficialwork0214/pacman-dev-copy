@@ -1,12 +1,12 @@
 //#region "Variable"
 var adSpotInterstitial = "zbjnq9gs";
 var adSpotRewardedVideo = "81xnt9bw";
-var packageName = "com.kaifoundry.pacman";
+var packageName = "com.kaifoundry.pacman.sp";
 var isAdReady = false;
 var isRVReady = false;
 
 var banner_ZoneKey = "l9mp2wfq";
-var bannerPackageName = "com.kaifoundry.pacman";
+var bannerPackageName = "com.kaifoundry.pacman.sp";
 
 //#endregion
 
