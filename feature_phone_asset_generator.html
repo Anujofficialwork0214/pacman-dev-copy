@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pacman - Feature Phone Asset Generator (Exact UI)</title>
+  <style>
+    body{margin:0;background:#000;font-family:Arial,Helvetica,sans-serif;color:#fff;padding:10px}
+    .container{max-width:860px;margin:0 auto}
+    h1{text-align:center;color:#ffff00;margin:6px 0 10px}
+    .section{background:#111;border:2px solid #ffff00;border-radius:10px;padding:10px;margin:10px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+    .item{background:#000;border:1px solid #333;border-radius:8px;padding:8px;text-align:center}
+    .item h3{margin:4px 0 8px;color:#ffff00;font-size:12px}
+    canvas{display:block;margin:6px auto;border:2px solid #ffff00;border-radius:6px;background:#000}
+    button{background:#ffd700;color:#000;border:none;border-radius:6px;padding:6px 10px;font-weight:700;cursor:pointer;margin:0 6px}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 Pacman - Feature Phone Assets (Exact UI)</h1>
+    <div class="section">
+      <div class="grid">
+        <div class="item">
+          <h3>Icon 102x102</h3>
+          <canvas id="icon102" width="102" height="102"></canvas>
+          <button onclick="genIcon102()">Generate</button>
+        </div>
+        <div class="item">
+          <h3>Screenshot 240x320 (Portrait)</h3>
+          <canvas id="shot240x320" width="240" height="320"></canvas>
+          <button onclick="genShot240x320()">Generate</button>
+        </div>
+        <div class="item">
+          <h3>Screenshot 320x240 (Landscape)</h3>
+          <canvas id="shot320x240" width="320" height="240"></canvas>
+          <button onclick="genShot320x240()">Generate</button>
+        </div>
+        <div class="item">
+          <h3>Banner 240x144</h3>
+          <canvas id="banner240x144" width="240" height="144"></canvas>
+          <button onclick="genBanner240x144()">Generate</button>
+        </div>
+        <div class="item">
+          <h3>Banner 240x105</h3>
+          <canvas id="banner240x105" width="240" height="105"></canvas>
+          <button onclick="genBanner240x105()">Generate</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const Y='#ffff00';
+    function drawHeader(ctx,w){
+      ctx.fillStyle='#000';ctx.fillRect(0,0,w,42);
+      ctx.font='bold 14px Arial';ctx.fillStyle=Y;ctx.textAlign='center';
+      ctx.fillText('Pacman', w/2, 14);
+      ctx.font='8px Arial';ctx.fillStyle='#ccc';ctx.fillText('D-PAD: Move | 5: Start | *: Sound', w/2, 28);
+    }
+    function drawKeyGuide(ctx,w,h){
+      ctx.font='8px Arial';ctx.fillStyle='#aaa';ctx.textAlign='center';
+      ctx.fillText('2-UP  8-DOWN  4-LEFT  6-RIGHT  5-START  *-SOUND', w/2, h-8);
+    }
+    function drawMaze(ctx,x,y,gw,gh){
+      ctx.save();ctx.translate(x,y);
+      ctx.fillStyle='#000';ctx.fillRect(0,0,gw,gh);
+      ctx.strokeStyle='#0040ff';ctx.lineWidth=3;
+      for(let i=18;i<gw;i+=54){ctx.beginPath();ctx.moveTo(i,16);ctx.lineTo(i,gh-16);ctx.stroke();}
+      for(let j=40;j<gh;j+=54){ctx.beginPath();ctx.moveTo(16,j);ctx.lineTo(gw-16,j);ctx.stroke();}
+      // dots
+      ctx.fillStyle=Y;for(let i=30;i<gw-30;i+=26){ctx.beginPath();ctx.arc(i,gh-26,3,0,Math.PI*2);ctx.fill();}
+      // pacman and ghosts
+      drawPac(ctx, gw*0.22, gh*0.62, 18);
+      ghost(ctx, gw*0.62, gh*0.36, 16, '#ff0000');
+      ghost(ctx, gw*0.42, gh*0.22, 14, '#00ffcc');
+      ctx.restore();
+    }
+    function drawPac(ctx,x,y,r){
+      ctx.fillStyle=Y;ctx.beginPath();const m=Math.PI/5;ctx.moveTo(x,y);ctx.arc(x,y,r,m,Math.PI*2-m);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#111';ctx.beginPath();ctx.arc(x-r*0.35,y-r*0.35,r*0.12,0,Math.PI*2);ctx.fill();
+    }
+    function ghost(ctx,x,y,r,c){
+      ctx.save();ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y-r*0.2,r,Math.PI,0);ctx.lineTo(x+r,y+r);
+      for(let i=0;i<5;i++){const t=x+r-i*(r*0.4);const yy=y+r-(i%2?0:r*0.25);ctx.lineTo(t,yy);}ctx.lineTo(x-r,y+r);ctx.closePath();ctx.fill();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(x-r*0.45,y-r*0.15,r*0.22,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x-r*0.1,y-r*0.15,r*0.22,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#000';ctx.beginPath();ctx.arc(x-r*0.45,y-r*0.15,r*0.09,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(x-r*0.1,y-r*0.15,r*0.09,0,Math.PI*2);ctx.fill();ctx.restore();
+    }
+
+    function genIcon102(){const c=document.getElementById('icon102');const ctx=c.getContext('2d');drawHeader(ctx,102);drawMaze(ctx,6,46,90,60);}    
+    function genShot240x320(){const c=document.getElementById('shot240x320');const ctx=c.getContext('2d');drawHeader(ctx,240);drawMaze(ctx,6,50,228,230);drawKeyGuide(ctx,240,320);} 
+    function genShot320x240(){const c=document.getElementById('shot320x240');const ctx=c.getContext('2d');drawHeader(ctx,320);drawMaze(ctx,10,50,300,150);drawKeyGuide(ctx,320,240);} 
+    function genBanner240x144(){const c=document.getElementById('banner240x144');const ctx=c.getContext('2d');drawHeader(ctx,240);drawMaze(ctx,6,48,228,86);} 
+    function genBanner240x105(){const c=document.getElementById('banner240x105');const ctx=c.getContext('2d');drawHeader(ctx,240);drawMaze(ctx,6,48,228,60);} 
+
+    window.addEventListener('load',()=>{setTimeout(()=>{genIcon102();genShot240x320();genShot320x240();genBanner240x144();genBanner240x105();},200)});
+  </script>
+</body>
+</html>
+
+
+
+
+
+
