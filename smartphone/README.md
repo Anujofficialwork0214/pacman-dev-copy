@@ -14,6 +14,7 @@ This version is optimized for Android smartphones with touchscreens and modern b
 
 ## Controls
 
+
 ### Touch Controls
 - **Arrow Buttons**: Swipe or tap direction buttons to move Pacman
 - **START**: Begin a new game
