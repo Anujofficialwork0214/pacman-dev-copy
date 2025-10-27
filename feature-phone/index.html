@@ -63,12 +63,26 @@
     </div>
 
     <!-- JioGames SDK (Load First) -->
-    <script src="./jiogames_sdk.js" type="text/javascript"></script>
+    <script src="./jiogames_jp.js" type="text/javascript"></script>
     <script>
         // Console logging for Jio Phone SDK
         console.log("Pacman - Jio Phone SDK initialized");
         window.addEventListener('load', function() {
             console.log("Pacman Jio Phone - Page Loaded");
+            
+            // JioGames SDK Integration - Get user profile on game load
+            setTimeout(function() {
+                if (typeof getUserProfile === 'function') {
+                    getUserProfile();
+                    console.log("Pacman FP: User profile requested");
+                }
+                
+                // Cache ads with 5 second delay between them
+                if (typeof gameCacheAd === 'function') {
+                    gameCacheAd();
+                    console.log("Pacman FP: Ads caching started");
+                }
+            }, 1000);
         });
     </script>
     
