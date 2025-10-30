@@ -11,7 +11,7 @@ Do not edit any other part.
 
 var adSpotInterstitial_key = "zbjnq9gs";       //Ex. : zbjnq9gs
 var adSpotRewardedVideo_key = "81xnt9bw";      //Ex. : 81xnt9bw
-var package = "com.kaifoundry.pacman.fp";              //Ex. : com.vendor.gamename
+var package = "com.kaifoundry.pacmanJP";              //Ex. : com.vendor.gamename
 var gameName = "pacman";                //Ex. : testgame
 var gameVersion = "V1.0.0";          //Ex. : V1.0.1
 var isAdReady = false;
