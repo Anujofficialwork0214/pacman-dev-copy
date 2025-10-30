@@ -19,8 +19,19 @@
     <!-- Splash Screen -->
     <div id="splash" style="position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:1000;color:#0ff;font-family:'Permanent Marker', cursive;">
       <div style="font-size:28px;margin-bottom:8px;">PACMAN</div>
+      <div id="eat-row" style="display:flex;align-items:center;gap:12px;margin:6px 0;">
+        <svg id="pacSvg" width="44" height="44" viewBox="0 0 40 40" aria-label="Pacman icon">
+          <circle cx="20" cy="20" r="18" fill="#ffeb3b"></circle>
+          <circle cx="24" cy="14" r="3" fill="#000"></circle>
+          <polygon id="mouth" points="20,20 40,10 40,30" fill="#000"></polygon>
+        </svg>
+        <span class="dot" style="color:#6ff;font-size:18px;">●</span>
+        <span class="dot" style="color:#6ff;font-size:18px;">●</span>
+        <span class="dot" style="color:#6ff;font-size:18px;">●</span>
+        <span class="dot" style="color:#6ff;font-size:18px;">●</span>
+        <span class="dot" style="color:#6ff;font-size:18px;">●</span>
+      </div>
       <div style="font-size:14px;color:#9ff">Loading…</div>
-      <div id="splash-dots" style="margin-top:10px;color:#6ff">● ● ●</div>
     </div>
 
     <!-- Home Screen (shown before game start) -->
@@ -162,6 +173,30 @@
 
         document.addEventListener('DOMContentLoaded', function(){
           document.querySelectorAll('.ctrl-btn, .pill-btn').forEach(bindBtn);
+          // Splash Pacman eating animation
+          (function(){
+            var mouth = document.getElementById('mouth');
+            var dots = Array.prototype.slice.call(document.querySelectorAll('#eat-row .dot'));
+            var open = true, i = 0;
+            setInterval(function(){
+              // toggle mouth shape
+              if (mouth) {
+                mouth.setAttribute('points', open ? '20,20 40,19 40,21' : '20,20 40,10 40,30');
+                open = !open;
+              }
+              // eat a dot every other toggle
+              if (!open && dots.length) {
+                if (i < dots.length) {
+                  dots[i].style.opacity = '0';
+                  i++;
+                } else {
+                  // reset
+                  dots.forEach(function(d){ d.style.opacity = '1'; });
+                  i = 0;
+                }
+              }
+            }, 200);
+          })();
           // Home screen bindings
           var hs=document.getElementById('home');
           var btnStart=document.getElementById('btnStartGame');
