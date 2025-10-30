@@ -16,6 +16,38 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <!-- Splash Screen -->
+    <div id="splash" style="position:fixed;inset:0;background:#000;display:flex;align-items:center;justify-content:center;flex-direction:column;z-index:1000;color:#0ff;font-family:'Permanent Marker', cursive;">
+      <div style="font-size:28px;margin-bottom:8px;">PACMAN</div>
+      <div style="font-size:14px;color:#9ff">Loading…</div>
+      <div id="splash-dots" style="margin-top:10px;color:#6ff">● ● ●</div>
+    </div>
+
+    <!-- Home Screen (shown before game start) -->
+    <div id="home" style="position:fixed;inset:0;background:linear-gradient(180deg,#030303,#0a0a0a);display:none;align-items:center;justify-content:center;z-index:900;">
+      <div style="width:92%;max-width:520px;border-radius:12px;background:#111;padding:16px;border:1px solid #0a3;box-shadow:0 0 24px rgba(0,255,170,.15);text-align:center;color:#eafffb;">
+        <div style="font-family:'Permanent Marker', cursive;font-size:26px;letter-spacing:1px;color:#35f7c6;margin-bottom:6px;">Pacman</div>
+        <div style="font-size:12px;color:#9ad;opacity:.9;margin-bottom:14px;">Modern Smartphone Edition</div>
+        <button id="btnStartGame" style="width:100%;padding:12px 10px;margin:6px 0;background:linear-gradient(90deg,#00ffaa,#00ccff);border:none;border-radius:8px;color:#001;font-weight:700;letter-spacing:.5px;">START GAME</button>
+        <button id="btnHelp" style="width:100%;padding:10px;margin:6px 0;background:#0d2230;border:1px solid #0aa;border-radius:8px;color:#bfe8ff;">HELP</button>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" style="position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:950;">
+      <div style="width:92%;max-width:560px;background:#0b1116;border:1px solid #0aa;border-radius:10px;color:#d9f7ff;padding:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="font-weight:700;color:#6df;">How to Play</div>
+          <button id="btnCloseHelp" style="background:#07202c;color:#9ad;border:1px solid #0aa;border-radius:6px;padding:6px 10px;">Close</button>
+        </div>
+        <ul style="margin:0;padding-left:18px;line-height:1.6;color:#bfe8ff;text-align:left;">
+          <li>Use on‑screen arrows to move Pacman.</li>
+          <li>Eat all biscuits to clear the level; pills make ghosts vulnerable.</li>
+          <li>Start button begins a new game; Sound toggles audio.</li>
+          <li>Pause button pauses/resumes gameplay.</li>
+        </ul>
+      </div>
+    </div>
     <div id="shim">shim for font face</div>
     <h1>🎮 Pacman - Android</h1>
     <p id="instructions">
@@ -50,6 +82,11 @@
         console.log("Pacman - Smartphone SDK initialized");
         window.addEventListener('load', function() {
             console.log("Pacman Smartphone - Page Loaded");
+          // Hide splash after a short delay, then show home
+          setTimeout(function(){
+            var s=document.getElementById('splash'); if(s){ s.style.display='none'; }
+            var h=document.getElementById('home'); if(h){ h.style.display='flex'; }
+          }, 1200);
             
             // JioGames SDK Integration - Get user profile on game load
             setTimeout(function() {
@@ -125,6 +162,27 @@
 
         document.addEventListener('DOMContentLoaded', function(){
           document.querySelectorAll('.ctrl-btn, .pill-btn').forEach(bindBtn);
+          // Home screen bindings
+          var hs=document.getElementById('home');
+          var btnStart=document.getElementById('btnStartGame');
+          var btnHelp=document.getElementById('btnHelp');
+          var help=document.getElementById('helpModal');
+          var btnClose=document.getElementById('btnCloseHelp');
+          function fireKey(code){
+            try{const ev=new KeyboardEvent('keydown',{bubbles:true,cancelable:true,keyCode:code,which:code});
+              Object.defineProperty(ev,'keyCode',{get:function(){return code;}});
+              Object.defineProperty(ev,'which',{get:function(){return code;}});
+              document.dispatchEvent(ev);
+            }catch(e){}
+          }
+          if(btnStart){ btnStart.addEventListener('click',function(){
+            if(hs){ hs.style.display='none'; }
+            // Optionally try to show an ad on start if ready
+            try{ if(typeof gameCacheAd==='function'){ gameCacheAd(); } }catch(e){}
+            setTimeout(function(){ fireKey(78); }, 150); // 'N' to start
+          }); }
+          if(btnHelp){ btnHelp.addEventListener('click',function(){ if(help){ help.style.display='flex'; } }); }
+          if(btnClose){ btnClose.addEventListener('click',function(){ if(help){ help.style.display='none'; } }); }
           
           // Sound button icon toggle logic
           const soundBtn = document.querySelector('.sound-btn');
