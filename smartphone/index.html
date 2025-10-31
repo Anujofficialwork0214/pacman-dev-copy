@@ -35,12 +35,54 @@
     </div>
 
     <!-- Home Screen (shown before game start) -->
-    <div id="home" style="position:fixed;inset:0;background:linear-gradient(180deg,#030303,#0a0a0a);display:none;align-items:center;justify-content:center;z-index:900;">
-      <div style="width:92%;max-width:520px;border-radius:12px;background:#111;padding:16px;border:1px solid #0a3;box-shadow:0 0 24px rgba(0,255,170,.15);text-align:center;color:#eafffb;">
+    <div id="home" style="position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:900;overflow:hidden;">
+      <!-- Modern banner background (behind card) -->
+      <div aria-hidden="true" style="position:absolute;inset:0;background:url('./pacman-background.jpg') center/cover no-repeat;
+      "></div>
+      <!-- Accent shapes -->
+      <div aria-hidden="true" style="position:absolute;top:-60px;left:-60px;width:240px;height:240px;border-radius:50%;background:linear-gradient(145deg,#00ffa3,#00ccff);filter:blur(20px);opacity:.25"></div>
+      <div aria-hidden="true" style="position:absolute;bottom:-70px;right:-50px;width:280px;height:280px;border-radius:50%;background:linear-gradient(145deg,#00ccff,#7c3aed);filter:blur(24px);opacity:.22"></div>
+      <!-- 3D banner scene: Pacman and enemies -->
+      <style>
+        /* Inline styles limited to the home scene */
+        #home .scene{position:absolute;inset:0;display:block;pointer-events:none;perspective:1000px}
+        #home .stage{position:absolute;left:50%;top:36%;width:92%;max-width:760px;height:190px;transform:translateX(-50%) rotateX(6deg) rotateY(-5deg);transform-style:preserve-3d;filter:drop-shadow(0 14px 26px rgba(0,0,0,.4))}
+        #home .track{position:absolute;left:0;right:0;top:55%;height:5px;margin-top:-2.5px;background:linear-gradient(90deg,rgba(255,255,255,.3) 0 14px,rgba(255,255,255,0) 14px 30px);transform:translateZ(-50px)}
+        #home .pac{position:absolute;left:110px;top:55%;width:68px;height:68px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff176 0%,#ffca28 50%,#f5a623 100%);outline:3px solid rgba(255,255,255,.2);transform:translateY(-50%) translateZ(28px)}
+        #home .pac:before{content:"";position:absolute;left:34px;top:14px;width:9px;height:9px;border-radius:50%;background:#0b1020;box-shadow:0 0 0 2px rgba(255,255,255,.2) inset}
+        #home .pac .mouth{position:absolute;left:32px;top:34px;width:40px;height:40px;background:conic-gradient(#0b0f1a 0 60deg,transparent 60deg 300deg,#0b0f1a 300deg);border-radius:0 50% 50% 50%;transform:translate(-50%,-50%)}
+        #home .dot{position:absolute;top:55%;width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 0 10px rgba(255,255,255,.6);transform:translateY(-50%) translateZ(6px)}
+        #home .d1{left:180px}#home .d2{left:240px}#home .d3{left:300px}#home .d4{left:360px}#home .d5{left:420px}
+        #home .ghost{position:absolute;top:55%;width:58px;height:64px;border-radius:28px 28px 12px 12px;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.28) 0 24%,transparent 26%),var(--gcol);
+          transform:translateY(-50%) translateZ(22px);box-shadow:0 12px 22px rgba(0,0,0,.3);outline:3px solid rgba(255,255,255,.18)}
+        #home .ghost:before,#home .ghost:after{content:"";position:absolute;top:18px;width:14px;height:14px;border-radius:50%;background:#fff}
+        #home .ghost:before{left:12px}#home .ghost:after{left:31px}
+        #home .ghost .pupil{position:absolute;top:24px;left:18px;width:9px;height:9px;border-radius:50%;background:#08243f}
+        #home .g1{--gcol:#22d3ee;left:500px}
+        #home .g2{--gcol:#f472b6;left:570px}
+        #home .g3{--gcol:#fb7185;left:640px}
+      </style>
+      
+      <div class="scene" aria-hidden="true">
+        <div class="stage">
+          <div class="track"></div>
+          <div class="pac"><div class="mouth"></div></div>
+          <div class="dot d1"></div>
+          <div class="dot d2"></div>
+          <div class="dot d3"></div>
+          <div class="dot d4"></div>
+          <div class="dot d5"></div>
+          <div class="ghost g1"><div class="pupil"></div></div>
+          <div class="ghost g2"><div class="pupil"></div></div>
+          <div class="ghost g3"><div class="pupil"></div></div>
+        </div>
+      </div>
+      <!-- Content card (above banner) -->
+      <div style="position:relative;z-index:2;width:92%;max-width:520px;border-radius:14px;background:rgba(6,12,20,.78);backdrop-filter:blur(6px);padding:16px;border:1px solid rgba(0,204,255,.25);box-shadow:0 12px 40px rgba(0,0,0,.35);text-align:center;color:#eafffb;">
         <div style="font-family:'Permanent Marker', cursive;font-size:26px;letter-spacing:1px;color:#35f7c6;margin-bottom:6px;">Pacman</div>
-        <div style="font-size:12px;color:#9ad;opacity:.9;margin-bottom:14px;">Modern Smartphone Edition</div>
-        <button id="btnStartGame" style="width:100%;padding:12px 10px;margin:6px 0;background:linear-gradient(90deg,#00ffaa,#00ccff);border:none;border-radius:8px;color:#001;font-weight:700;letter-spacing:.5px;">START GAME</button>
-        <button id="btnHelp" style="width:100%;padding:10px;margin:6px 0;background:#0d2230;border:1px solid #0aa;border-radius:8px;color:#bfe8ff;">HELP</button>
+        <div style="font-size:12px;color:#bfe8ff;opacity:.95;margin-bottom:14px;">Modern Smartphone Edition</div>
+        <button id="btnStartGame" style="width:100%;padding:12px 10px;margin:6px 0;background:linear-gradient(90deg,#00ffaa,#00ccff);border:none;border-radius:10px;color:#001;font-weight:700;letter-spacing:.5px;box-shadow:0 6px 16px rgba(0,204,255,.35);">START GAME</button>
+        <button id="btnHelp" style="width:100%;padding:10px;margin:6px 0;background:rgba(13,34,48,.9);border:1px solid rgba(0,170,255,.45);border-radius:10px;color:#bfe8ff;">HELP</button>
       </div>
     </div>
 
@@ -97,6 +139,11 @@
           setTimeout(function(){
             var s=document.getElementById('splash'); if(s){ s.style.display='none'; }
             var h=document.getElementById('home'); if(h){ h.style.display='flex'; }
+            // Load and show banner on home screen
+            try{
+              if (typeof loadBanner === 'function') { loadBanner(); }
+              setTimeout(function(){ if (typeof showBanner === 'function') { showBanner(); if (typeof setBottomBanner === 'function') { setBottomBanner(); } } }, 400);
+            } catch(e) { console.log(e); }
           }, 1200);
             
             // JioGames SDK Integration - Get user profile on game load
@@ -212,6 +259,8 @@
           }
           if(btnStart){ btnStart.addEventListener('click',function(){
             if(hs){ hs.style.display='none'; }
+            // Hide banner when game starts
+            try{ if (typeof hideBanner === 'function') { hideBanner(); } }catch(e){}
             // Optionally try to show an ad on start if ready
             try{ if(typeof gameCacheAd==='function'){ gameCacheAd(); } }catch(e){}
             setTimeout(function(){ fireKey(78); }, 150); // 'N' to start

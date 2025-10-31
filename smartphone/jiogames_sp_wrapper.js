@@ -4,6 +4,8 @@ var adSpotRewardedVideo = "81xnt9bw";
 var packageName = "com.kaifoundry.pacmanSP";
 var isAdReady = false;
 var isRVReady = false;
+// Expose isRVReady globally so app.js can check it
+window.isRVReady = false;
 
 var banner_ZoneKey = "l9mp2wfq";
 var bannerPackageName = "com.kaifoundry.pacmanSP";
@@ -78,7 +80,7 @@ function getUserProfile() {
 window.onAdPrepared = function (adSpotKey) {
     console.log("JioGames: onAdPrepared "+adSpotKey.toString());
     adSpotKey == adSpotInterstitial && (isAdReady = true, console.log("JioGames: onAdPrepared MidRoll " + isAdReady));
-    adSpotKey == adSpotRewardedVideo && (isRVReady = true, console.log("JioGames: onAdPrepared RewardedVideo " + isRVReady));   
+    adSpotKey == adSpotRewardedVideo && (isRVReady = true, window.isRVReady = true, console.log("JioGames: onAdPrepared RewardedVideo " + isRVReady));   
 };
 
 window.onAdClosed = function (data, pIsVideoCompleted, pIsEligibleForReward) {
@@ -95,7 +97,7 @@ window.onAdClosed = function (data, pIsVideoCompleted, pIsEligibleForReward) {
     console.log("JioGames: onAdClosed "+data.toString(), "localData "+localData[0]+" "+localData[1]+" "+localData[2]);
 
     adSpotKey == adSpotInterstitial && (isAdReady = false, console.log("JioGames: onAdClose MidRoll " + isAdReady));
-    adSpotKey == adSpotRewardedVideo && (isRVReady = false, console.log("JioGames: onAdClose RewardedVideo " + isRVReady));
+    adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdClose RewardedVideo " + isRVReady));
 
     if (adSpotKey == adSpotRewardedVideo && isEligibleForReward) {
         GratifyReward();
@@ -115,7 +117,7 @@ window.onAdFailedToLoad = function (data, pDescription){
     console.log("JioGames: onAdFailedToLoad "+data.toString()+" localData "+localData[0]+" "+localData[1]);
     
     adSpotKey == adSpotInterstitial && (isAdReady = false, console.log("JioGames: onAdFailedToLoad MidRoll " + isAdReady+" description "+description));
-    adSpotKey == adSpotRewardedVideo && (isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));    
+    adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));    
 };
 
 
@@ -155,7 +157,19 @@ window.onClientResume = function () {
 
 
 function GratifyReward() {
-    console.log("JioGames: GratifyReward Game user here");
+    console.log("JioGames: GratifyReward - User watched rewarded ad successfully!");
+    // Give reward: Extra life to continue playing
+    try {
+        // Call game's reward function if it exists (will be defined in app.js)
+        if (typeof window.giveRewardExtraLife === 'function') {
+            window.giveRewardExtraLife();
+            console.log("JioGames: Reward granted - Extra life given!");
+        } else {
+            console.warn("JioGames: giveRewardExtraLife function not found. Reward not applied.");
+        }
+    } catch(e) {
+        console.error("JioGames: Error granting reward:", e);
+    }
 };
 
 function cacheAd() {

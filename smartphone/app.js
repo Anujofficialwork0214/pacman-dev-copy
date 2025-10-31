@@ -307,6 +307,11 @@ Pacman.User = function (game, map) {
         lives -= 1;
     };
 
+    function addLife() {
+        lives += 1;
+        console.log("Pacman: Extra life added! Lives now: " + lives);
+    };
+
     function getLives() {
         return lives;
     };
@@ -518,6 +523,7 @@ Pacman.User = function (game, map) {
         "draw"          : draw,
         "drawDead"      : drawDead,
         "loseLife"      : loseLife,
+        "addLife"       : addLife,
         "getLives"      : getLives,
         "score"         : score,
         "addScore"      : addScore,
@@ -881,9 +887,31 @@ var PACMAN = (function () {
         if (user.getLives() > 0) {
             startLevel();
         } else {
-            // Game Over - post score and show ad (JioGames SDK)
+            // Game Over - post score and show rewarded ad option
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
+            
+            // Show rewarded ad option for extra life
+            if (typeof showAdRewarded === 'function' && typeof isRVReady !== 'undefined') {
+                setTimeout(function() {
+                    if (isRVReady) {
+                        dialog("🎁 Watch Ad for Extra Life? (Tap to watch)");
+                        // Wait for user tap/click, then show rewarded ad
+                        var rewardedClickHandler = function() {
+                            document.removeEventListener('click', rewardedClickHandler);
+                            document.removeEventListener('touchstart', rewardedClickHandler);
+                            showAdRewarded();
+                            console.log("Pacman: Showing rewarded ad for extra life");
+                        };
+                        document.addEventListener('click', rewardedClickHandler, {once: true});
+                        document.addEventListener('touchstart', rewardedClickHandler, {once: true});
+                    } else {
+                        dialog("Game Over! Press N for new game");
+                    }
+                }, 800);
+            } else {
+                dialog("Game Over! Press N for new game");
+            }
             
             // if (typeof postScore === 'function') {
             //     postScore(finalScore);
@@ -1134,6 +1162,16 @@ var PACMAN = (function () {
         document.addEventListener("keypress", keyPress, true); 
         
         timer = window.setInterval(mainLoop, 1000 / Pacman.FPS);
+    };
+    
+    // Reward function: Give extra life when rewarded ad is watched
+    window.giveRewardExtraLife = function() {
+        console.log("Pacman: Granting reward - Extra life!");
+        if (user && typeof user.addLife === 'function') {
+            user.addLife();
+            startLevel(); // Continue playing
+            dialog("🎉 Extra Life! Continue playing!");
+        }
     };
     
     return {
