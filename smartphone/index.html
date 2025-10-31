@@ -258,10 +258,19 @@
             }catch(e){}
           }
           if(btnStart){ btnStart.addEventListener('click',function(){
+            // Try to show an interstitial before starting, align with working flow
+            try{
+              if (typeof showAd==='function') {
+                showAd();
+              } else if (typeof gameCacheAd==='function') {
+                gameCacheAd();
+                setTimeout(function(){ if (typeof showAd==='function') { showAd(); } }, 2000);
+              }
+            }catch(e){}
             if(hs){ hs.style.display='none'; }
             // Hide banner when game starts
             try{ if (typeof hideBanner === 'function') { hideBanner(); } }catch(e){}
-            // Optionally try to show an ad on start if ready
+            // Ensure cache cycle continues
             try{ if(typeof gameCacheAd==='function'){ gameCacheAd(); } }catch(e){}
             setTimeout(function(){ fireKey(78); }, 150); // 'N' to start
           }); }

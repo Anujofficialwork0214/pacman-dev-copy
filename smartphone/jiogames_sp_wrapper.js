@@ -118,6 +118,14 @@ window.onAdFailedToLoad = function (data, pDescription){
     
     adSpotKey == adSpotInterstitial && (isAdReady = false, console.log("JioGames: onAdFailedToLoad MidRoll " + isAdReady+" description "+description));
     adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));    
+    // Retry caching to recover from temporary no-inventory
+    try {
+        if (adSpotKey == adSpotInterstitial) {
+            setTimeout(function(){ if (typeof cacheAd === 'function') cacheAd(); }, 10000);
+        } else if (adSpotKey == adSpotRewardedVideo) {
+            setTimeout(function(){ if (typeof cacheAdRewarded === 'function') cacheAdRewarded(); }, 15000);
+        }
+    } catch(e) {}
 };
 
 
