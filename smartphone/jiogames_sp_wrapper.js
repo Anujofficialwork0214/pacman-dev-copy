@@ -1,13 +1,13 @@
 //#region "Variable"
-var adSpotInterstitial = "zbjnq9gs";
-var adSpotRewardedVideo = "81xnt9bw";
+var adSpotInterstitial = "qm19ko74";
+var adSpotRewardedVideo = "s8omi3we";
 var packageName = "com.kaifoundry.pacmanSP";
 var isAdReady = false;
 var isRVReady = false;
 // Expose isRVReady globally so app.js can check it
 window.isRVReady = false;
 
-var banner_ZoneKey = "l9mp2wfq";
+var banner_ZoneKey = "5abvng4i";
 var bannerPackageName = "com.kaifoundry.pacmanSP";
 
 //#endregion
