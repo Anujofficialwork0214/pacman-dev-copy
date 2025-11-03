@@ -134,6 +134,8 @@
         // Console logging for smartphone SDK
         console.log("Pacman - Smartphone SDK initialized");
         window.addEventListener('load', function() {
+            // Immediately prepare interstitial cache on game load (one-time)
+            try { if (typeof cacheAd === 'function') { cacheAd(); } } catch(e){}
             console.log("Pacman Smartphone - Page Loaded");
           // Hide splash after a short delay, then show home
           setTimeout(function(){
