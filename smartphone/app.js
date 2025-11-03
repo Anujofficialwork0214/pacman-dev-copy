@@ -998,21 +998,7 @@ var PACMAN = (function () {
                     setState(EATEN_PAUSE);
                     timerStart = tick;
                     
-                    // Mid roll show ads - show after eating 5 enemy ghosts
-                    if (totalGhostsEaten === 5 && typeof showAd === 'function') {
-                        setTimeout(function() {
-                            if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
-                                showAd();
-                                console.log("Pacman: Mid roll show ads shown (after 5 enemy ghosts)");
-                            } else {
-                                // Cache ad if not ready, will show when ready
-                                if (typeof cacheAd === 'function') {
-                                    cacheAd();
-                                    console.log("Pacman: Mid roll ad not ready, caching...");
-                                }
-                            }
-                        }, 500);
-                    }
+                    // Mid-roll interstitial removed
                 } else if (ghosts[i].isDangerous()) {
                     audio.play("die");
                     setState(DYING);
@@ -1086,51 +1072,19 @@ var PACMAN = (function () {
         level += 1;
         map.draw(ctx);
         dialog("🎉 Congratulations! Level " + (level - 1) + " Complete!");
-        
-        // Show rewarded ad on level complete (not on game over)
+
+        // Show interstitial ad after each level completion (no rewarded ads)
         setTimeout(function() {
-            // Cache rewarded ad if not ready
-            if (typeof cacheAdRewarded === 'function') {
-                cacheAdRewarded();
-                console.log("Pacman: Level Complete - Rewarded ad caching started");
-            }
-            
-            // Show message while ad loads
-            dialog("Watch ads for extra life");
-            
-            var adReadyShown = false;
-            var checkCount = 0;
-            var maxChecks = 60; // 60 checks * 500ms = 30 seconds max wait
-            
-            // Wait for ad to be ready, then show option
-            var checkAdReady = setInterval(function() {
-                checkCount++;
-                
-                if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
-                    clearInterval(checkAdReady);
-                    if (!adReadyShown) {
-                        adReadyShown = true;
-                        console.log("Pacman: Rewarded ad ready - showing option");
-                        dialog("Watch ads for extra life (Tap to watch)");
-                        
-                        // Wait for user tap/click to show rewarded ad
-                        var rewardedClickHandler = function() {
-                            document.removeEventListener('click', rewardedClickHandler);
-                            document.removeEventListener('touchstart', rewardedClickHandler);
-                            showAdRewarded();
-                            console.log("Pacman: User tapped - showing rewarded ad for extra life");
-                        };
-                        document.addEventListener('click', rewardedClickHandler, {once: true});
-                        document.addEventListener('touchstart', rewardedClickHandler, {once: true});
-                    }
-                } else if (checkCount >= maxChecks) {
-                    clearInterval(checkAdReady);
-                    if (window.isRVReady !== true) {
-                        console.log("Pacman: Rewarded ad failed to load after 30 seconds");
-                    }
+            try {
+                if (typeof showAd === 'function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
+                    showAd();
+                    console.log("Pacman: Interstitial shown after level complete");
+                } else if (typeof cacheAd === 'function') {
+                    cacheAd();
+                    console.log("Pacman: Interstitial not ready after level complete, caching...");
                 }
-            }, 500);
-        }, 1000);
+            } catch(e) {}
+        }, 800);
         
         setTimeout(function() {
             totalGhostsEaten = 0; // Reset ghost count for new level
