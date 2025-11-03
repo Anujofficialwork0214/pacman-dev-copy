@@ -443,22 +443,6 @@ Pacman.User = function (game, map) {
             addScore((block === Pacman.BISCUIT) ? 10 : 50);
             eaten += 1;
             
-            // Mid roll interstitial - show after eating ~90 dots (midway through level)
-            if (eaten === 90 && typeof showAd === 'function') {
-                setTimeout(function() {
-                    if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
-                        showAd();
-                        console.log("Pacman: Mid roll interstitial shown (after 90 dots)");
-                    } else {
-                        // Cache ad if not ready, will show on next level or when ready
-                        if (typeof cacheAd === 'function') {
-                            cacheAd();
-                            console.log("Pacman: Mid roll ad not ready, caching...");
-                        }
-                    }
-                }, 500);
-            }
-            
             if (eaten === 182) {
                 game.completedLevel();
             }
@@ -800,6 +784,7 @@ var PACMAN = (function () {
         ghosts       = [],
         ghostSpecs   = ["#00FFDE", "#FF0000", "#FFB8DE", "#FFB847"],
         eatenCount   = 0,
+        totalGhostsEaten = 0, // Track total ghosts eaten for mid-roll ad
         level        = 0,
         tick         = 0,
         ghostPos, userPos, 
@@ -1004,11 +989,28 @@ var PACMAN = (function () {
                     audio.play("eatghost");
                     ghosts[i].eat();
                     eatenCount += 1;
+                    totalGhostsEaten += 1; // Track total ghosts eaten across all pills
                     nScore = eatenCount * 50;
                     drawScore(nScore, ghostPos[i]);
                     user.addScore(nScore);                    
                     setState(EATEN_PAUSE);
                     timerStart = tick;
+                    
+                    // Mid roll interstitial - show after eating 5 enemy ghosts
+                    if (totalGhostsEaten === 5 && typeof showAd === 'function') {
+                        setTimeout(function() {
+                            if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
+                                showAd();
+                                console.log("Pacman: Mid roll interstitial shown (after 5 enemy ghosts)");
+                            } else {
+                                // Cache ad if not ready, will show when ready
+                                if (typeof cacheAd === 'function') {
+                                    cacheAd();
+                                    console.log("Pacman: Mid roll ad not ready, caching...");
+                                }
+                            }
+                        }, 500);
+                    }
                 } else if (ghosts[i].isDangerous()) {
                     audio.play("die");
                     setState(DYING);
@@ -1129,6 +1131,7 @@ var PACMAN = (function () {
         }, 1000);
         
         setTimeout(function() {
+            totalGhostsEaten = 0; // Reset ghost count for new level
             map.reset();
             user.newLevel();
             startLevel();
