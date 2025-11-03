@@ -148,9 +148,9 @@
                     getUserProfile();
                     console.log("Pacman: User profile requested");
                 }
-            }, 1500);
+            }, 2000);
             
-            // Step 2: Load banner (3 seconds after load)
+            // Step 2: Load banner (5 seconds after load)
             setTimeout(function() {
                 try{
                     if (typeof loadBanner === 'function') { 
@@ -162,18 +162,18 @@
                                 showBanner(); 
                                 if (typeof setBottomBanner === 'function') { setBottomBanner(); } 
                             } 
-                        }, 800);
+                        }, 1000);
                     }
                 } catch(e) { console.log(e); }
-            }, 3000);
+            }, 5000);
             
-            // Step 3: Cache show ads (6 seconds after load, after banner)
+            // Step 3: Cache show ads (8 seconds after load, after banner)
             setTimeout(function() {
                 if (typeof cacheAd === 'function') {
                     cacheAd();
                     console.log("Pacman: Show ads caching started");
                 }
-            }, 6000);
+            }, 8000);
             
             // Step 4: Rewarded video will be cached only when game over happens (not on initial load)
         });
@@ -287,8 +287,12 @@
             if(hs){ hs.style.display='none'; }
             // Hide banner when game starts
             try{ if (typeof hideBanner === 'function') { hideBanner(); } }catch(e){}
-            // Ensure cache cycle continues
-            try{ if(typeof gameCacheAd==='function'){ gameCacheAd(); } }catch(e){}
+            // Ensure cache cycle continues (only if ad not ready)
+            try{ 
+                if(typeof cacheAd==='function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === false) {
+                    cacheAd(); 
+                }
+            }catch(e){}
             setTimeout(function(){ fireKey(78); }, 150); // 'N' to start
           }); }
           if(btnHelp){ btnHelp.addEventListener('click',function(){ if(help){ help.style.display='flex'; } }); }

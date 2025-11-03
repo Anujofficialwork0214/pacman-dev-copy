@@ -839,10 +839,12 @@ var PACMAN = (function () {
         map.reset();
         map.draw(ctx);
         
-        // Cache ad on game start (JioGames SDK)
-        if (typeof cacheAd === 'function') {
+        // Cache ad on game start (only if not ready)
+        if (typeof cacheAd === 'function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === false) {
             cacheAd();
-            console.log("Pacman: Caching midroll ad");
+            console.log("Pacman: Caching midroll ad (not ready)");
+        } else if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
+            console.log("Pacman: Ad already ready, skipping cache");
         }
         
         startLevel();

@@ -118,15 +118,7 @@ window.onAdFailedToLoad = function (data, pDescription){
     console.log("JioGames: onAdFailedToLoad "+data.toString()+" localData "+localData[0]+" "+localData[1]);
     
     adSpotKey == adSpotInterstitial && (isAdReady = false, window.isAdReady = false, console.log("JioGames: onAdFailedToLoad Show Ads " + isAdReady+" description "+description));
-    adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));    
-    // Retry caching to recover from temporary no-inventory
-    try {
-        if (adSpotKey == adSpotInterstitial) {
-            setTimeout(function(){ if (typeof cacheAd === 'function') cacheAd(); }, 10000);
-        } else if (adSpotKey == adSpotRewardedVideo) {
-            setTimeout(function(){ if (typeof cacheAdRewarded === 'function') cacheAdRewarded(); }, 15000);
-        }
-    } catch(e) {}
+    adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));
 };
 
 
@@ -182,16 +174,20 @@ function GratifyReward() {
 };
 
 function cacheAd() {
-    console.log("JioGames: cacheAd called");
-    if (!isAdReady) {
-        cacheAdMidRoll(adSpotInterstitial, packageName);
+    if (isAdReady) {
+        console.log("JioGames: cacheAd skipped - ad already ready (isAdReady=true)");
+        return;
     }
+    console.log("JioGames: cacheAd called - caching show ads");
+    cacheAdMidRoll(adSpotInterstitial, packageName);
 }
 function cacheAdRewarded() {
-    console.log("JioGames: cacheAdRewarded called");
-    if (!isRVReady) {
-        cacheAdRewardedVideo(adSpotRewardedVideo, packageName);
-    }    
+    if (isRVReady) {
+        console.log("JioGames: cacheAdRewarded skipped - rewarded ad already ready (isRVReady=true)");
+        return;
+    }
+    console.log("JioGames: cacheAdRewarded called - caching rewarded ad");
+    cacheAdRewardedVideo(adSpotRewardedVideo, packageName);
 }
 function showAd() {
     console.log("JioGames: showAd called");
