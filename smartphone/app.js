@@ -784,6 +784,7 @@ var PACMAN = (function () {
         ghosts       = [],
         ghostSpecs   = ["#00FFDE", "#FF0000", "#FFB8DE", "#FFB847"],
         eatenCount   = 0,
+        totalGhostsEaten = 0, // Track total ghosts eaten for mid-roll ad
         level        = 0,
         tick         = 0,
         ghostPos, userPos, 
@@ -812,12 +813,8 @@ var PACMAN = (function () {
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "18px Calibri";
         var width = ctx.measureText(text).width,
-            x     = ((map.width * map.blockSize) - width) / 2,
-            // Center position: move 10% up from center (40% of screen height)
-            canvasHeight = map.height * map.blockSize,
-            centerY = canvasHeight / 2,
-            y     = centerY - (canvasHeight * 0.1); // 10% up from center (40% of height)        
-        ctx.fillText(text, x, y);
+            x     = ((map.width * map.blockSize) - width) / 2;        
+        ctx.fillText(text, x, (map.height * 10) + 8);
     }
 
     function soundDisabled() {
@@ -891,42 +888,9 @@ var PACMAN = (function () {
         if (user.getLives() > 0) {
             startLevel();
         } else {
-            // Game Over - post score and show rewarded ad option
+            // Game Over - no rewarded ad here (moved to level complete)
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
-            
-            // Show rewarded ad option for extra life (only when lives = 0, need to continue)
-            // First cache rewarded ad on game over (only call it when game over happens)
-            setTimeout(function() {
-                // Cache rewarded ad first (only on game over, not on initial load)
-                if (typeof cacheAdRewarded === 'function') {
-                    cacheAdRewarded();
-                    console.log("Pacman: Game Over - Rewarded ad caching started");
-                }
-                
-                // Show message while ad loads
-                dialog("Watch ads for extra life");
-                
-                // Wait for ad to be ready, then auto-show
-                var checkAdReady = setInterval(function() {
-                    if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
-                        clearInterval(checkAdReady);
-                        console.log("Pacman: Rewarded ad ready - showing automatically");
-                        // Auto-show rewarded ad (no user interaction needed, just show it)
-                        showAdRewarded();
-                        console.log("Pacman: Showing rewarded ad for extra life");
-                    }
-                }, 500);
-                
-                // Stop checking after 15 seconds if ad doesn't load
-                setTimeout(function() {
-                    clearInterval(checkAdReady);
-                    if (window.isRVReady !== true) {
-                        console.log("Pacman: Rewarded ad failed to load");
-                        dialog("Watch ads for extra life");
-                    }
-                }, 15000);
-            }, 800);
             
             // if (typeof postScore === 'function') {
             //     postScore(finalScore);
@@ -1025,11 +989,28 @@ var PACMAN = (function () {
                     audio.play("eatghost");
                     ghosts[i].eat();
                     eatenCount += 1;
+                    totalGhostsEaten += 1; // Track total ghosts eaten across all pills
                     nScore = eatenCount * 50;
                     drawScore(nScore, ghostPos[i]);
                     user.addScore(nScore);                    
                     setState(EATEN_PAUSE);
                     timerStart = tick;
+                    
+                    // Mid roll show ads - show after eating 5 enemy ghosts
+                    if (totalGhostsEaten === 5 && typeof showAd === 'function') {
+                        setTimeout(function() {
+                            if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
+                                showAd();
+                                console.log("Pacman: Mid roll show ads shown (after 5 enemy ghosts)");
+                            } else {
+                                // Cache ad if not ready, will show when ready
+                                if (typeof cacheAd === 'function') {
+                                    cacheAd();
+                                    console.log("Pacman: Mid roll ad not ready, caching...");
+                                }
+                            }
+                        }, 500);
+                    }
                 } else if (ghosts[i].isDangerous()) {
                     audio.play("die");
                     setState(DYING);
@@ -1054,7 +1035,7 @@ var PACMAN = (function () {
         } else if (state === WAITING && stateChanged) {            
             stateChanged = false;
             map.draw(ctx);
-            // Removed "Press START button to play a new game" message            
+            dialog("Press START button to play a new game");            
         } else if (state === EATEN_PAUSE && 
                    (tick - timerStart) > (Pacman.FPS / 3)) {
             map.draw(ctx);
@@ -1103,7 +1084,54 @@ var PACMAN = (function () {
         level += 1;
         map.draw(ctx);
         dialog("🎉 Congratulations! Level " + (level - 1) + " Complete!");
+        
+        // Show rewarded ad on level complete (not on game over)
         setTimeout(function() {
+            // Cache rewarded ad if not ready
+            if (typeof cacheAdRewarded === 'function') {
+                cacheAdRewarded();
+                console.log("Pacman: Level Complete - Rewarded ad caching started");
+            }
+            
+            // Show message while ad loads
+            dialog("Watch ads for extra life");
+            
+            var adReadyShown = false;
+            var checkCount = 0;
+            var maxChecks = 60; // 60 checks * 500ms = 30 seconds max wait
+            
+            // Wait for ad to be ready, then show option
+            var checkAdReady = setInterval(function() {
+                checkCount++;
+                
+                if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
+                    clearInterval(checkAdReady);
+                    if (!adReadyShown) {
+                        adReadyShown = true;
+                        console.log("Pacman: Rewarded ad ready - showing option");
+                        dialog("Watch ads for extra life (Tap to watch)");
+                        
+                        // Wait for user tap/click to show rewarded ad
+                        var rewardedClickHandler = function() {
+                            document.removeEventListener('click', rewardedClickHandler);
+                            document.removeEventListener('touchstart', rewardedClickHandler);
+                            showAdRewarded();
+                            console.log("Pacman: User tapped - showing rewarded ad for extra life");
+                        };
+                        document.addEventListener('click', rewardedClickHandler, {once: true});
+                        document.addEventListener('touchstart', rewardedClickHandler, {once: true});
+                    }
+                } else if (checkCount >= maxChecks) {
+                    clearInterval(checkAdReady);
+                    if (window.isRVReady !== true) {
+                        console.log("Pacman: Rewarded ad failed to load after 30 seconds");
+                    }
+                }
+            }, 500);
+        }, 1000);
+        
+        setTimeout(function() {
+            totalGhostsEaten = 0; // Reset ghost count for new level
             map.reset();
             user.newLevel();
             startLevel();
@@ -1171,7 +1199,7 @@ var PACMAN = (function () {
         
     function loaded() {
 
-        // Removed "Press START button to play a new game" message
+        dialog("Press START button to play a new game");
         
         document.addEventListener("keydown", keyDown, true);
         document.addEventListener("keypress", keyPress, true); 
@@ -1185,7 +1213,7 @@ var PACMAN = (function () {
         if (user && typeof user.addLife === 'function') {
             user.addLife();
             startLevel(); // Continue playing
-            // Removed dialog message - no reward messages shown in game canvas
+            dialog("🎉 Extra Life! Continue playing!");
         }
     };
     
