@@ -812,8 +812,12 @@ var PACMAN = (function () {
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "18px Calibri";
         var width = ctx.measureText(text).width,
-            x     = ((map.width * map.blockSize) - width) / 2;        
-        ctx.fillText(text, x, (map.height * 10) + 8);
+            x     = ((map.width * map.blockSize) - width) / 2,
+            // Center position: move 10% up from center (40% of screen height)
+            canvasHeight = map.height * map.blockSize,
+            centerY = canvasHeight / 2,
+            y     = centerY - (canvasHeight * 0.1); // 10% up from center (40% of height)        
+        ctx.fillText(text, x, y);
     }
 
     function soundDisabled() {
@@ -900,24 +904,17 @@ var PACMAN = (function () {
                     console.log("Pacman: Game Over - Rewarded ad caching started");
                 }
                 
-                // Show loading message while ad loads
-                dialog("🎁 Loading ad...");
+                // Show message while ad loads
+                dialog("Watch ads for extra life");
                 
-                // Wait for ad to be ready, then show option
+                // Wait for ad to be ready, then auto-show
                 var checkAdReady = setInterval(function() {
                     if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
                         clearInterval(checkAdReady);
-                        dialog("🎁 Watch Ad for Extra Life? (Tap to watch)");
-                        console.log("Pacman: Rewarded ad ready - showing option");
-                        // Wait for user tap/click, then show rewarded ad
-                        var rewardedClickHandler = function() {
-                            document.removeEventListener('click', rewardedClickHandler);
-                            document.removeEventListener('touchstart', rewardedClickHandler);
-                            showAdRewarded();
-                            console.log("Pacman: Showing rewarded ad for extra life");
-                        };
-                        document.addEventListener('click', rewardedClickHandler, {once: true});
-                        document.addEventListener('touchstart', rewardedClickHandler, {once: true});
+                        console.log("Pacman: Rewarded ad ready - showing automatically");
+                        // Auto-show rewarded ad (no user interaction needed, just show it)
+                        showAdRewarded();
+                        console.log("Pacman: Showing rewarded ad for extra life");
                     }
                 }, 500);
                 
@@ -926,7 +923,7 @@ var PACMAN = (function () {
                     clearInterval(checkAdReady);
                     if (window.isRVReady !== true) {
                         console.log("Pacman: Rewarded ad failed to load");
-                        dialog("🎁 Ad not ready. Try again later!");
+                        dialog("Watch ads for extra life");
                     }
                 }, 15000);
             }, 800);
@@ -1057,7 +1054,7 @@ var PACMAN = (function () {
         } else if (state === WAITING && stateChanged) {            
             stateChanged = false;
             map.draw(ctx);
-            dialog("Press START button to play a new game");            
+            // Removed "Press START button to play a new game" message            
         } else if (state === EATEN_PAUSE && 
                    (tick - timerStart) > (Pacman.FPS / 3)) {
             map.draw(ctx);
@@ -1174,7 +1171,7 @@ var PACMAN = (function () {
         
     function loaded() {
 
-        dialog("Press START button to play a new game");
+        // Removed "Press START button to play a new game" message
         
         document.addEventListener("keydown", keyDown, true);
         document.addEventListener("keypress", keyPress, true); 
@@ -1188,7 +1185,7 @@ var PACMAN = (function () {
         if (user && typeof user.addLife === 'function') {
             user.addLife();
             startLevel(); // Continue playing
-            dialog("🎉 Extra Life! Continue playing!");
+            // Removed dialog message - no reward messages shown in game canvas
         }
     };
     
