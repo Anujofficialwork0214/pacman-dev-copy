@@ -161,6 +161,18 @@
                             if (typeof showBanner === 'function') { 
                                 showBanner(); 
                                 if (typeof setBottomBanner === 'function') { setBottomBanner(); } 
+                                // After banner shows, trigger mid-roll (show ads) once
+                                setTimeout(function(){
+                                    try{
+                                        if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true && typeof showAd === 'function') {
+                                            showAd();
+                                            console.log("Pacman: Show ads triggered after banner show");
+                                        } else if (typeof cacheAd === 'function') {
+                                            cacheAd();
+                                            console.log("Pacman: Ad not ready after banner, caching...");
+                                        }
+                                    }catch(e){}
+                                }, 1200);
                             } 
                         }, 1000);
                     }
@@ -275,24 +287,9 @@
             }catch(e){}
           }
           if(btnStart){ btnStart.addEventListener('click',function(){
-            // Try to show ads before starting, align with working flow
-            try{
-              if (typeof showAd==='function') {
-                showAd();
-              } else if (typeof gameCacheAd==='function') {
-                gameCacheAd();
-                setTimeout(function(){ if (typeof showAd==='function') { showAd(); } }, 2000);
-              }
-            }catch(e){}
             if(hs){ hs.style.display='none'; }
             // Hide banner when game starts
             try{ if (typeof hideBanner === 'function') { hideBanner(); } }catch(e){}
-            // Ensure cache cycle continues (only if ad not ready)
-            try{ 
-                if(typeof cacheAd==='function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === false) {
-                    cacheAd(); 
-                }
-            }catch(e){}
             setTimeout(function(){ fireKey(78); }, 150); // 'N' to start
           }); }
           if(btnHelp){ btnHelp.addEventListener('click',function(){ if(help){ help.style.display='flex'; } }); }
