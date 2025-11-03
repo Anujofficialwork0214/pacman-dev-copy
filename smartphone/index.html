@@ -167,11 +167,11 @@
                 } catch(e) { console.log(e); }
             }, 3000);
             
-            // Step 3: Cache interstitial (6 seconds after load, after banner)
+            // Step 3: Cache show ads (6 seconds after load, after banner)
             setTimeout(function() {
                 if (typeof cacheAd === 'function') {
                     cacheAd();
-                    console.log("Pacman: Interstitial caching started");
+                    console.log("Pacman: Show ads caching started");
                 }
             }, 6000);
             
@@ -275,7 +275,7 @@
             }catch(e){}
           }
           if(btnStart){ btnStart.addEventListener('click',function(){
-            // Try to show an interstitial before starting, align with working flow
+            // Try to show ads before starting, align with working flow
             try{
               if (typeof showAd==='function') {
                 showAd();

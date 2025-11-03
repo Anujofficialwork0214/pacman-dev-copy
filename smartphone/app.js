@@ -996,12 +996,12 @@ var PACMAN = (function () {
                     setState(EATEN_PAUSE);
                     timerStart = tick;
                     
-                    // Mid roll interstitial - show after eating 5 enemy ghosts
+                    // Mid roll show ads - show after eating 5 enemy ghosts
                     if (totalGhostsEaten === 5 && typeof showAd === 'function') {
                         setTimeout(function() {
                             if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
                                 showAd();
-                                console.log("Pacman: Mid roll interstitial shown (after 5 enemy ghosts)");
+                                console.log("Pacman: Mid roll show ads shown (after 5 enemy ghosts)");
                             } else {
                                 // Cache ad if not ready, will show when ready
                                 if (typeof cacheAd === 'function') {

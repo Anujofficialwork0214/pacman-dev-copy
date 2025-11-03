@@ -80,7 +80,7 @@ function getUserProfile() {
 
 window.onAdPrepared = function (adSpotKey) {
     console.log("JioGames: onAdPrepared "+adSpotKey.toString());
-    adSpotKey == adSpotInterstitial && (isAdReady = true, window.isAdReady = true, console.log("JioGames: onAdPrepared MidRoll " + isAdReady));
+    adSpotKey == adSpotInterstitial && (isAdReady = true, window.isAdReady = true, console.log("JioGames: onAdPrepared Show Ads " + isAdReady));
     adSpotKey == adSpotRewardedVideo && (isRVReady = true, window.isRVReady = true, console.log("JioGames: onAdPrepared RewardedVideo " + isRVReady));   
 };
 
@@ -97,7 +97,7 @@ window.onAdClosed = function (data, pIsVideoCompleted, pIsEligibleForReward) {
     }
     console.log("JioGames: onAdClosed "+data.toString(), "localData "+localData[0]+" "+localData[1]+" "+localData[2]);
 
-    adSpotKey == adSpotInterstitial && (isAdReady = false, window.isAdReady = false, console.log("JioGames: onAdClose MidRoll " + isAdReady));
+    adSpotKey == adSpotInterstitial && (isAdReady = false, window.isAdReady = false, console.log("JioGames: onAdClose Show Ads " + isAdReady));
     adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdClose RewardedVideo " + isRVReady));
 
     if (adSpotKey == adSpotRewardedVideo && isEligibleForReward) {
@@ -117,7 +117,7 @@ window.onAdFailedToLoad = function (data, pDescription){
 
     console.log("JioGames: onAdFailedToLoad "+data.toString()+" localData "+localData[0]+" "+localData[1]);
     
-    adSpotKey == adSpotInterstitial && (isAdReady = false, window.isAdReady = false, console.log("JioGames: onAdFailedToLoad MidRoll " + isAdReady+" description "+description));
+    adSpotKey == adSpotInterstitial && (isAdReady = false, window.isAdReady = false, console.log("JioGames: onAdFailedToLoad Show Ads " + isAdReady+" description "+description));
     adSpotKey == adSpotRewardedVideo && (isRVReady = false, window.isRVReady = false, console.log("JioGames: onAdFailedToLoad RewardedVideo " + isRVReady+" description "+description));    
     // Retry caching to recover from temporary no-inventory
     try {
