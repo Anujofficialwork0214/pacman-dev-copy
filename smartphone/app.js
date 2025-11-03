@@ -891,11 +891,24 @@ var PACMAN = (function () {
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
             
-            // Show rewarded ad option for extra life
-            if (typeof showAdRewarded === 'function' && typeof isRVReady !== 'undefined') {
-                setTimeout(function() {
-                    if (isRVReady) {
+            // Show rewarded ad option for extra life (only when lives = 0, need to continue)
+            // First cache rewarded ad on game over (only call it when game over happens)
+            setTimeout(function() {
+                // Cache rewarded ad first (only on game over, not on initial load)
+                if (typeof cacheAdRewarded === 'function') {
+                    cacheAdRewarded();
+                    console.log("Pacman: Game Over - Rewarded ad caching started");
+                }
+                
+                // Show loading message while ad loads
+                dialog("🎁 Loading ad...");
+                
+                // Wait for ad to be ready, then show option
+                var checkAdReady = setInterval(function() {
+                    if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
+                        clearInterval(checkAdReady);
                         dialog("🎁 Watch Ad for Extra Life? (Tap to watch)");
+                        console.log("Pacman: Rewarded ad ready - showing option");
                         // Wait for user tap/click, then show rewarded ad
                         var rewardedClickHandler = function() {
                             document.removeEventListener('click', rewardedClickHandler);
@@ -905,13 +918,18 @@ var PACMAN = (function () {
                         };
                         document.addEventListener('click', rewardedClickHandler, {once: true});
                         document.addEventListener('touchstart', rewardedClickHandler, {once: true});
-                    } else {
-                        dialog("Game Over! Press N for new game");
                     }
-                }, 800);
-            } else {
-                dialog("Game Over! Press N for new game");
-            }
+                }, 500);
+                
+                // Stop checking after 15 seconds if ad doesn't load
+                setTimeout(function() {
+                    clearInterval(checkAdReady);
+                    if (window.isRVReady !== true) {
+                        console.log("Pacman: Rewarded ad failed to load");
+                        dialog("🎁 Ad not ready. Try again later!");
+                    }
+                }, 15000);
+            }, 800);
             
             // if (typeof postScore === 'function') {
             //     postScore(finalScore);
