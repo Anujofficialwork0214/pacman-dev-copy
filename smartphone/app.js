@@ -812,8 +812,12 @@ var PACMAN = (function () {
         ctx.fillStyle = "#FFFF00";
         ctx.font      = "18px Calibri";
         var width = ctx.measureText(text).width,
-            x     = ((map.width * map.blockSize) - width) / 2;        
-        ctx.fillText(text, x, (map.height * 10) + 8);
+            x     = ((map.width * map.blockSize) - width) / 2,
+            // Center position: move 10% up from center (40% of screen height)
+            canvasHeight = map.height * map.blockSize,
+            centerY = canvasHeight / 2,
+            y     = centerY - (canvasHeight * 0.1); // 10% up from center (40% of height)        
+        ctx.fillText(text, x, y);
     }
 
     function soundDisabled() {
@@ -891,27 +895,38 @@ var PACMAN = (function () {
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
             
-            // Show rewarded ad option for extra life
-            if (typeof showAdRewarded === 'function' && typeof isRVReady !== 'undefined') {
-                setTimeout(function() {
-                    if (isRVReady) {
-                        dialog("🎁 Watch Ad for Extra Life? (Tap to watch)");
-                        // Wait for user tap/click, then show rewarded ad
-                        var rewardedClickHandler = function() {
-                            document.removeEventListener('click', rewardedClickHandler);
-                            document.removeEventListener('touchstart', rewardedClickHandler);
-                            showAdRewarded();
-                            console.log("Pacman: Showing rewarded ad for extra life");
-                        };
-                        document.addEventListener('click', rewardedClickHandler, {once: true});
-                        document.addEventListener('touchstart', rewardedClickHandler, {once: true});
-                    } else {
-                        dialog("Game Over! Press N for new game");
+            // Show rewarded ad option for extra life (only when lives = 0, need to continue)
+            // First cache rewarded ad on game over (only call it when game over happens)
+            setTimeout(function() {
+                // Cache rewarded ad first (only on game over, not on initial load)
+                if (typeof cacheAdRewarded === 'function') {
+                    cacheAdRewarded();
+                    console.log("Pacman: Game Over - Rewarded ad caching started");
+                }
+                
+                // Show message while ad loads
+                dialog("Watch ads for extra life");
+                
+                // Wait for ad to be ready, then auto-show
+                var checkAdReady = setInterval(function() {
+                    if (typeof showAdRewarded === 'function' && window.isRVReady === true) {
+                        clearInterval(checkAdReady);
+                        console.log("Pacman: Rewarded ad ready - showing automatically");
+                        // Auto-show rewarded ad (no user interaction needed, just show it)
+                        showAdRewarded();
+                        console.log("Pacman: Showing rewarded ad for extra life");
                     }
-                }, 800);
-            } else {
-                dialog("Game Over! Press N for new game");
-            }
+                }, 500);
+                
+                // Stop checking after 15 seconds if ad doesn't load
+                setTimeout(function() {
+                    clearInterval(checkAdReady);
+                    if (window.isRVReady !== true) {
+                        console.log("Pacman: Rewarded ad failed to load");
+                        dialog("Watch ads for extra life");
+                    }
+                }, 15000);
+            }, 800);
             
             // if (typeof postScore === 'function') {
             //     postScore(finalScore);
@@ -1039,7 +1054,7 @@ var PACMAN = (function () {
         } else if (state === WAITING && stateChanged) {            
             stateChanged = false;
             map.draw(ctx);
-            dialog("Press START button to play a new game");            
+            // Removed "Press START button to play a new game" message            
         } else if (state === EATEN_PAUSE && 
                    (tick - timerStart) > (Pacman.FPS / 3)) {
             map.draw(ctx);
@@ -1156,7 +1171,7 @@ var PACMAN = (function () {
         
     function loaded() {
 
-        dialog("Press START button to play a new game");
+        // Removed "Press START button to play a new game" message
         
         document.addEventListener("keydown", keyDown, true);
         document.addEventListener("keypress", keyPress, true); 
@@ -1170,7 +1185,7 @@ var PACMAN = (function () {
         if (user && typeof user.addLife === 'function') {
             user.addLife();
             startLevel(); // Continue playing
-            dialog("🎉 Extra Life! Continue playing!");
+            // Removed dialog message - no reward messages shown in game canvas
         }
     };
     
