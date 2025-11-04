@@ -839,13 +839,19 @@ var PACMAN = (function () {
         map.reset();
         map.draw(ctx);
         
-        // Cache ad on game start (only if not ready)
-        if (typeof cacheAd === 'function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === false) {
-            cacheAd();
-            console.log("Pacman: Caching midroll ad (not ready)");
-        } else if (typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
-            console.log("Pacman: Ad already ready, skipping cache");
-        }
+        // Cache ads at game start per guidelines (midroll + rewarded after 5s)
+        try {
+            if (typeof cacheAd === 'function') {
+                cacheAd();
+                console.log("Pacman: Caching midroll ad");
+            }
+            if (typeof cacheAdRewarded === 'function') {
+                setTimeout(function(){
+                    cacheAdRewarded();
+                    console.log("Pacman: Caching rewarded ad (delayed 5s)");
+                }, 5000);
+            }
+        } catch(e) {}
         
         startLevel();
     }
@@ -894,17 +900,17 @@ var PACMAN = (function () {
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
             
-            // if (typeof postScore === 'function') {
-            //     postScore(finalScore);
-            //     console.log("Pacman: Score posted to SDK - " + finalScore);
-            // }
+            if (typeof postScore === 'function') {
+                postScore(finalScore);
+                console.log("Pacman: Score posted to SDK - " + finalScore);
+            }
             
-            // if (typeof showAd === 'function') {
-            //     setTimeout(function() {
-            //         showAd();
-            //         console.log("Pacman: Showing midroll ad");
-            //     }, 500);
-            // }
+            if (typeof showAd === 'function') {
+                setTimeout(function() {
+                    showAd();
+                    console.log("Pacman: Showing midroll ad");
+                }, 500);
+            }
         }
     }
 
@@ -1359,18 +1365,14 @@ $(function(){
   console.log("Pacman: Initializing JioGames SDK...");
   
   // Get user profile on game initialization
-  // if (typeof getUserProfile === 'function') {
-  //   getUserProfile();
-  //   console.log("Pacman: getUserProfile() called");
-  // }
-  
-  // Cache ads on game initialization
-  // setTimeout(function() {
-  //   if (typeof gameCacheAd === 'function') {
-  //     gameCacheAd();
-  //     console.log("Pacman: gameCacheAd() called - Ads caching started");
-  //   }
-  // }, 2000);
+  if (typeof getUserProfile === 'function') {
+    try { getUserProfile(); console.log("Pacman: getUserProfile() called"); } catch(e) {}
+  }
+
+  // Load banner on init
+  if (typeof loadBanner === 'function') {
+    try { loadBanner(); } catch(e) {}
+  }
 
   if (Modernizr.canvas && Modernizr.localstorage && 
       Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {

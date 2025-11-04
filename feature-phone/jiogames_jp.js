@@ -9,8 +9,8 @@ Do not edit any other part.
 
 //If you are using this script then remove JioGames related all parts from the index.html file. 
 
-var adSpotInterstitial_key = "zbjnq9gs";       //Ex. : zbjnq9gs
-var adSpotRewardedVideo_key = "81xnt9bw";      //Ex. : 81xnt9bw
+var adSpotInterstitial_key = "4bot8u3y";       //Ex. : zbjnq9gs
+var adSpotRewardedVideo_key = "dhrczu3s";      //Ex. : 81xnt9bw
 var package = "com.kaifoundry.pacmanJP";              //Ex. : com.vendor.gamename
 var gameName = "pacman";                //Ex. : testgame
 var gameVersion = "V1.0.0";          //Ex. : V1.0.1
