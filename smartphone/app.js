@@ -896,21 +896,24 @@ var PACMAN = (function () {
         if (user.getLives() > 0) {
             startLevel();
         } else {
-            // Game Over - no rewarded ad here (moved to level complete)
+            // Game Over with rewarded continue flow
             var finalScore = user.theScore();
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
-            
-            if (typeof postScore === 'function') {
-                postScore(finalScore);
-                console.log("Pacman: Score posted to SDK - " + finalScore);
-            }
-            
-            if (typeof showAd === 'function') {
-                setTimeout(function() {
-                    showAd();
-                    console.log("Pacman: Showing midroll ad");
-                }, 500);
-            }
+
+            try {
+                if (typeof window !== 'undefined' && window.isRVReady === true && typeof showAdRewarded === 'function') {
+                    var wants = window.confirm('Continue with an extra life by watching a video?');
+                    if (wants) {
+                        showAdRewarded();
+                    } else {
+                        if (typeof postScore === 'function') { postScore(finalScore); }
+                        if (typeof showAd === 'function') { setTimeout(function(){ showAd(); }, 500); }
+                    }
+                } else {
+                    if (typeof postScore === 'function') { postScore(finalScore); }
+                    if (typeof showAd === 'function') { setTimeout(function(){ showAd(); }, 500); }
+                }
+            } catch(e) {}
         }
     }
 
