@@ -116,14 +116,11 @@
 
     <!-- Mobile Controls -->
     <div class="controls" aria-label="Mobile Controls">
-      <!-- Top row: Sound and Pause buttons -->
+      <!-- Top row: Sound, Start and Pause buttons -->
       <div class="controls-row controls-top">
         <button class="pill-btn sound-btn" data-key="83" aria-label="Toggle Sound (S)">🔊 Sound</button>
-        <button class="pill-btn" data-key="80" aria-label="Pause/Resume (P)">⏸ Pause</button>
-      </div>
-      <!-- Middle row: Start button -->
-      <div class="controls-row">
-        <button class="ctrl-btn btn-start" data-key="78" aria-label="Start (N)">START</button>
+        <button class="pill-btn btn-start" data-key="78" aria-label="Start (N)">▶ Start</button>
+        <button class="pill-btn btn-pause" data-key="80" aria-label="Pause/Resume (P)" style="display:none;">⏸ Pause</button>
       </div>
       <!-- Bottom row: Arrow buttons -->
       <div class="controls-row">
@@ -153,14 +150,14 @@
             
             // Load banner immediately on page load (like Space Battle)
             try{
-                loadBanner();
-                console.log("Pacman: Banner loading started");
-                // Show banner after it loads
-                setTimeout(function(){ 
-                    showBanner(); 
+                        loadBanner();
+                        console.log("Pacman: Banner loading started");
+                        // Show banner after it loads
+                        setTimeout(function(){ 
+                                showBanner(); 
                     setBottomBanner(); 
-                }, 1000);
-            } catch(e) { console.log(e); }
+                        }, 1000);
+                } catch(e) { console.log(e); }
             
             // Note: cacheAd() will be called ONLY at game start (in startNewGame())
             // NOT during initialization per JioGames guidelines
@@ -270,7 +267,10 @@
             }
             // Hide banner when game starts (direct call like Space Battle)
             try{ hideBanner(); }catch(e){}
-            setTimeout(function(){ fireKey(78); }, 150); // 'N' to start
+            setTimeout(function(){ 
+              fireKey(78); // 'N' to start
+              // Toggle buttons: Start will be hidden and Pause shown by gamePlaying event
+            }, 150);
           }); }
           if(btnHelp){ btnHelp.addEventListener('click',function(){ if(help){ help.style.display='flex'; } }); }
           if(btnClose){ btnClose.addEventListener('click',function(){ if(help){ help.style.display='none'; } }); }
@@ -305,14 +305,187 @@
             setInterval(updateSoundIcon, 1000);
           }
           
-          // Pause button functionality
-          const pauseBtn = document.querySelector('.pill-btn[data-key="80"]');
-          if (pauseBtn) {
-            pauseBtn.addEventListener('click', function() {
-              // Fire 'P' key event to trigger pause/resume
-              fireKey(80);
-            });
+          // Two separate buttons: Start and Pause - one active at a time
+          var startBtn = null;
+          var pauseBtn = null;
+          var currentGameState = 'WAITING';
+          
+          // Function to update button states (enable/disable)
+          function updateButtonStates(newState) {
+            currentGameState = newState;
+            
+            if (!startBtn) startBtn = document.querySelector('.btn-start');
+            if (!pauseBtn) pauseBtn = document.querySelector('.btn-pause');
+            
+            if (!startBtn || !pauseBtn) return;
+            
+            if (newState === 'WAITING') {
+              // Show Start (enabled), hide Pause
+              startBtn.style.display = 'inline-flex';
+              startBtn.disabled = false;
+              startBtn.style.opacity = '1';
+              startBtn.style.cursor = 'pointer';
+              startBtn.classList.remove('btn-disabled');
+              
+              pauseBtn.style.display = 'none';
+              pauseBtn.disabled = true;
+              console.log('Pacman: Start enabled, Pause hidden');
+              
+            } else if (newState === 'PLAYING' || newState === 'COUNTDOWN') {
+              // Hide Start, show Pause (enabled)
+              startBtn.style.display = 'none';
+              startBtn.disabled = true;
+              startBtn.classList.add('btn-disabled');
+              
+              pauseBtn.style.display = 'inline-flex';
+              pauseBtn.disabled = false;
+              pauseBtn.style.opacity = '1';
+              pauseBtn.style.cursor = 'pointer';
+              pauseBtn.classList.remove('btn-disabled');
+              pauseBtn.innerHTML = '⏸ Pause';
+              console.log('Pacman: Start hidden/disabled, Pause enabled');
+              
+            } else if (newState === 'PAUSE') {
+              // Show Start (enabled), show Pause (disabled - dim, not clickable)
+              startBtn.style.display = 'inline-flex';
+              startBtn.disabled = false;
+              startBtn.style.opacity = '1';
+              startBtn.style.cursor = 'pointer';
+              startBtn.classList.remove('btn-disabled');
+              
+              pauseBtn.style.display = 'inline-flex';
+              pauseBtn.disabled = true;
+              pauseBtn.style.opacity = '0.5';
+              pauseBtn.style.cursor = 'not-allowed';
+              pauseBtn.classList.add('btn-disabled');
+              pauseBtn.innerHTML = '▶ Resume';
+              console.log('Pacman: Start enabled, Pause disabled (dim)');
+            }
           }
+          
+          // Set up event listeners IMMEDIATELY
+          window.addEventListener('gameWaiting', function() {
+            console.log('Pacman: Received gameWaiting event');
+            updateButtonStates('WAITING');
+          });
+          
+          window.addEventListener('gamePlaying', function() {
+            console.log('Pacman: Received gamePlaying event');
+            updateButtonStates('PLAYING');
+          });
+          
+          window.addEventListener('gamePaused', function() {
+            console.log('Pacman: Received gamePaused event');
+            updateButtonStates('PAUSE');
+          });
+          
+          // Set up button click handlers
+          setTimeout(function() {
+            startBtn = document.querySelector('.btn-start');
+            pauseBtn = document.querySelector('.btn-pause');
+            
+            if (startBtn) {
+              startBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (this.disabled) {
+                  console.log('Pacman: Start button is disabled, ignoring click');
+                  return;
+                }
+                
+                console.log('Pacman: Start button clicked');
+                
+                // Disable Start button immediately (dim, not clickable)
+                this.disabled = true;
+                this.style.opacity = '0.5';
+                this.style.cursor = 'not-allowed';
+                this.classList.add('btn-disabled');
+                
+                // Show and enable Pause button
+                if (pauseBtn) {
+                  pauseBtn.style.display = 'inline-flex';
+                  pauseBtn.disabled = false;
+                  pauseBtn.style.opacity = '1';
+                  pauseBtn.style.cursor = 'pointer';
+                  pauseBtn.classList.remove('btn-disabled');
+                  pauseBtn.innerHTML = '⏸ Pause';
+                }
+                
+                // Fire N key to start game
+                setTimeout(function() {
+                  fireKey(78);
+                }, 50);
+              });
+            }
+            
+            if (pauseBtn) {
+              pauseBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                if (this.disabled) {
+                  console.log('Pacman: Pause button is disabled, ignoring click');
+                  return;
+                }
+                
+                console.log('Pacman: Pause button clicked, current state:', currentGameState);
+                
+                if (currentGameState === 'PLAYING' || currentGameState === 'COUNTDOWN') {
+                  // Pause the game - disable Pause, enable Start
+                  this.disabled = true;
+                  this.style.opacity = '0.5';
+                  this.style.cursor = 'not-allowed';
+                  this.classList.add('btn-disabled');
+                  this.innerHTML = '▶ Resume';
+                  
+                  // Enable Start button
+                  if (startBtn) {
+                    startBtn.style.display = 'inline-flex';
+                    startBtn.disabled = false;
+                    startBtn.style.opacity = '1';
+                    startBtn.style.cursor = 'pointer';
+                    startBtn.classList.remove('btn-disabled');
+                  }
+                  
+                  // Fire P key to pause
+                  setTimeout(function() {
+                    fireKey(80);
+                  }, 50);
+                  
+                } else if (currentGameState === 'PAUSE') {
+                  // Resume the game - disable Start, enable Pause
+                  if (startBtn) {
+                    startBtn.disabled = true;
+                    startBtn.style.opacity = '0.5';
+                    startBtn.style.cursor = 'not-allowed';
+                    startBtn.classList.add('btn-disabled');
+                  }
+                  
+                  // Enable Pause button
+                  this.disabled = false;
+                  this.style.opacity = '1';
+                  this.style.cursor = 'pointer';
+                  this.classList.remove('btn-disabled');
+                  this.innerHTML = '⏸ Pause';
+                  
+                  // Fire P key to resume
+                  setTimeout(function() {
+                    fireKey(80);
+                  }, 50);
+                }
+              });
+            }
+            
+            // Initial state
+            updateButtonStates('WAITING');
+            
+            // Export for debugging
+            window.pacmanButtonState = {
+              getState: function() { return currentGameState; },
+              setState: function(s) { updateButtonStates(s); }
+            };
+          }, 100);
         });
       })();
     </script>

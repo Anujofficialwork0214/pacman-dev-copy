@@ -919,6 +919,22 @@ var PACMAN = (function () {
     function setState(nState) { 
         state = nState;
         stateChanged = true;
+        
+        // Dispatch custom events for button toggle in UI
+        try {
+            if (nState === WAITING) {
+                window.dispatchEvent(new CustomEvent('gameWaiting'));
+            } else if (nState === PLAYING) {
+                window.dispatchEvent(new CustomEvent('gamePlaying'));
+            } else if (nState === COUNTDOWN) {
+                // COUNTDOWN is like playing - show Pause button
+                window.dispatchEvent(new CustomEvent('gamePlaying'));
+            } else if (nState === PAUSE) {
+                window.dispatchEvent(new CustomEvent('gamePaused'));
+            }
+        } catch(e) {
+            console.log('Event dispatch error:', e);
+        }
     };
     
     function collided(user, ghost) {
@@ -1053,7 +1069,7 @@ var PACMAN = (function () {
             
             if (diff === 0) {
                 map.draw(ctx);
-                setState(PLAYING);
+                setState(PLAYING); // This will fire gamePlaying event
             } else {
                 if (diff !== lastTime) { 
                     lastTime = diff;

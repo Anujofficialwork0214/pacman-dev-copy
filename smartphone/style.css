@@ -24,13 +24,16 @@ body {
   background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
   margin: 0 auto;
   padding: var(--pad);
+  padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom, 0px));
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #fff;
   width: 100%;
-  height: 100vh; /* Fixed height - no scrolling */
+  min-height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 #shim {
@@ -65,7 +68,9 @@ h1 {
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  flex-shrink: 1;
+  min-height: 0;
 }
 
 #pacman {
@@ -90,9 +95,9 @@ h1 {
 .controls {
   display: block !important;
   visibility: visible !important;
-  margin: 6px auto 4px;
+  margin: 4px auto 2px;
   max-width: 100%;
-  padding: 0 8px;
+  padding: 0 4px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
@@ -100,46 +105,64 @@ h1 {
   z-index: 100;
   width: 100%;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .controls-row {
   display: flex !important;
   visibility: visible !important;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   margin: 3px 0;
   width: 100%;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   position: relative;
   z-index: 101;
 }
 
-/* Top row for Sound and Pause buttons */
+/* Arrow buttons row - better spacing */
+.controls-row .btn-up {
+  margin-bottom: 4px;
+}
+
+.controls-row .btn-left,
+.controls-row .btn-down,
+.controls-row .btn-right {
+  margin: 0 2px;
+}
+
+/* Top row for Sound, Start/Pause buttons */
 .controls-top {
   margin-bottom: 6px;
-  gap: 12px;
+  gap: 6px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .ctrl-btn, .pill-btn {
-  min-width: 48px;
-  min-height: 38px;
-  padding: 6px 10px;
-  border-radius: 8px;
+  min-width: 44px;
+  min-height: 36px;
+  padding: 5px 8px;
+  border-radius: 6px;
   border: 2px solid #333;
   background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
   color: #fff;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.1);
   cursor: pointer;
   transition: all 0.15s ease;
   touch-action: manipulation;
-  display: inline-block !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
   visibility: visible !important;
   opacity: 1 !important;
   position: relative;
   z-index: 101;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
+  flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
 .ctrl-btn:active, .pill-btn:active {
@@ -159,14 +182,73 @@ h1 {
   background: linear-gradient(145deg, #ffaa00, #ffd700);
 }
 
-/* Pause and Sound buttons in top row */
+/* Sound and Start/Pause button in top row */
 .controls-top .pill-btn {
-  min-width: 80px;
-  min-height: 40px;
-  font-size: 12px;
-  padding: 8px 12px;
-  flex: 1;
-  max-width: 140px;
+  min-width: 70px;
+  min-height: 36px;
+  font-size: 11px;
+  padding: 6px 10px;
+  flex: 1 1 auto;
+  max-width: 48%;
+}
+
+/* Start button styling */
+.btn-start {
+  background: linear-gradient(145deg, #00ffaa, #00ccff) !important;
+  color: #001 !important;
+  font-weight: 800 !important;
+}
+
+.btn-start:active:not(.btn-disabled) {
+  background: linear-gradient(145deg, #00ccff, #00ffaa) !important;
+}
+
+/* Pause button styling */
+.btn-pause {
+  background: linear-gradient(145deg, #ff6b6b, #ee5a52) !important;
+  color: #fff !important;
+  font-weight: 800 !important;
+}
+
+.btn-pause:active:not(.btn-disabled) {
+  background: linear-gradient(145deg, #ee5a52, #ff6b6b) !important;
+}
+
+/* Disabled button styling - dim, light color, not clickable */
+.pill-btn.btn-disabled,
+.ctrl-btn.btn-disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background: linear-gradient(145deg, #666, #444) !important;
+  color: #aaa !important;
+  filter: grayscale(30%) !important;
+}
+
+.pill-btn:disabled,
+.ctrl-btn:disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+  background: linear-gradient(145deg, #666, #444) !important;
+  color: #aaa !important;
+  filter: grayscale(30%) !important;
+}
+
+/* Start button when disabled */
+.btn-start.btn-disabled,
+.btn-start:disabled {
+  background: linear-gradient(145deg, #666, #444) !important;
+  color: #aaa !important;
+  opacity: 0.4 !important;
+}
+
+/* Pause button when disabled */
+.btn-pause.btn-disabled,
+.btn-pause:disabled {
+  background: linear-gradient(145deg, #666, #444) !important;
+  color: #aaa !important;
+  opacity: 0.4 !important;
 }
 
 /* Responsive adjustments */
@@ -174,53 +256,61 @@ h1 {
 /* Small phones (320px - 375px) */
 @media (max-width: 375px) {
   :root {
-    --pad: 8px;
+    --pad: 4px;
+  }
+  
+  body {
+    padding: var(--pad) !important;
   }
   
   h1 { 
-    font-size: 18px;
-    margin: 6px 0 3px;
+    font-size: 16px;
+    margin: 3px 0 2px;
   }
   
   #instructions {
-    font-size: 10px;
-    margin: 0 0 6px;
+    font-size: 9px;
+    margin: 0 0 3px;
   }
   
   #pacman {
-    max-width: min(92vw, 350px);
-    margin: 4px auto 6px;
+    max-width: min(95vw, 350px);
+    margin: 2px auto 4px;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 4px;
   }
   
   .controls {
-    margin: 8px auto 6px;
-    padding: 0 4px;
+    margin: 2px auto 2px;
+    padding: 0 2px;
     width: 100%;
     display: block !important;
     visibility: visible !important;
   }
   
   .ctrl-btn, .pill-btn {
-    min-width: 50px;
-    min-height: 44px;
-    font-size: 14px;
-    padding: 8px 10px;
-    display: inline-block !important;
+    min-width: 40px;
+    min-height: 32px;
+    font-size: 12px;
+    padding: 4px 6px;
+    display: inline-flex !important;
     visibility: visible !important;
   }
   
   .controls-top .pill-btn {
-    min-width: 70px;
-    min-height: 44px;
-    font-size: 11px;
-    padding: 8px 10px;
-    flex: 1;
-    max-width: 130px;
+    min-width: 60px;
+    min-height: 32px;
+    font-size: 10px;
+    padding: 4px 6px;
+    flex: 1 1 auto;
+    max-width: 48%;
   }
   
   .controls-row { 
-    gap: 6px;
-    margin: 3px 0;
+    gap: 3px;
+    margin: 1px 0;
     display: flex !important;
     visibility: visible !important;
   }
@@ -228,32 +318,57 @@ h1 {
 
 /* Medium phones (376px - 414px) */
 @media (min-width: 376px) and (max-width: 414px) {
-  h1 { font-size: 24px; }
+  :root {
+    --pad: 6px;
+  }
+  
+  body {
+    padding: var(--pad) !important;
+    padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  
+  h1 { 
+    font-size: 20px;
+    margin: 4px 0 2px;
+  }
+  
+  #pacman {
+    margin: 2px auto 4px;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 4px;
+  }
   
   .controls {
     display: block !important;
     visibility: visible !important;
     width: 100%;
+    margin: 2px auto 2px;
+    padding: 0 3px;
   }
   
   .ctrl-btn, .pill-btn {
-    min-width: 60px;
-    min-height: 44px;
-    font-size: 16px;
-    display: inline-block !important;
+    min-width: 48px;
+    min-height: 38px;
+    font-size: 13px;
+    padding: 5px 8px;
+    display: inline-flex !important;
     visibility: visible !important;
   }
   
   .controls-top .pill-btn {
-    min-width: 85px;
-    min-height: 40px;
-    font-size: 11px;
-    flex: 1;
-    max-width: 130px;
+    min-width: 75px;
+    min-height: 38px;
+    font-size: 10px;
+    padding: 5px 8px;
+    flex: 1 1 auto;
+    max-width: 48%;
   }
   
   .controls-row { 
-    gap: 10px;
+    gap: 4px;
+    margin: 2px 0;
     display: flex !important;
     visibility: visible !important;
   }
@@ -261,24 +376,97 @@ h1 {
 
 /* Large phones (415px - 767px) */
 @media (min-width: 415px) and (max-width: 767px) {
-  h1 { font-size: 26px; }
+  :root {
+    --pad: 8px;
+  }
+  
+  body {
+    padding: var(--pad) !important;
+    padding-bottom: calc(var(--pad) + env(safe-area-inset-bottom, 0px)) !important;
+  }
+  
+  h1 { 
+    font-size: 22px;
+    margin: 4px 0 3px;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 6px;
+  }
   
   .controls {
     display: block !important;
     visibility: visible !important;
     width: 100%;
+    margin: 3px auto 3px;
+    padding: 0 4px;
   }
   
   .ctrl-btn, .pill-btn {
-    min-width: 68px;
-    min-height: 50px;
-    font-size: 18px;
-    display: inline-block !important;
+    min-width: 56px;
+    min-height: 42px;
+    font-size: 15px;
+    padding: 6px 10px;
+    display: inline-flex !important;
     visibility: visible !important;
   }
   
   .controls-top .pill-btn {
-    min-width: 105px;
+    min-width: 90px;
+    min-height: 42px;
+    font-size: 11px;
+    padding: 6px 10px;
+    flex: 1 1 auto;
+    max-width: 48%;
+  }
+  
+  .controls-row {
+    gap: 6px;
+    margin: 2px 0;
+    display: flex !important;
+    visibility: visible !important;
+  }
+}
+
+/* Tablets (768px+) */
+@media (min-width: 768px) {
+  :root {
+    --pad: 24px;
+  }
+  
+  body {
+    padding: var(--pad) !important;
+  }
+  
+  h1 { 
+    font-size: 28px;
+    margin: 8px 0 4px;
+  }
+  
+  #pacman {
+    max-width: min(92vw, 500px);
+    margin: 6px auto 10px;
+  }
+  
+  .game-wrapper {
+    margin-bottom: 10px;
+  }
+  
+  .controls {
+    max-width: 500px;
+    margin: 6px auto;
+    padding: 0 8px;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    min-width: 80px;
+    min-height: 60px;
+    font-size: 22px;
+    padding: 14px 18px;
+  }
+  
+  .controls-top .pill-btn {
+    min-width: 120px;
     min-height: 46px;
     font-size: 12px;
     flex: 1;
@@ -474,27 +662,55 @@ body:not(.home-visible) .controls {
   user-select: none;
 }
 
-/* Mobile-specific fixes for button visibility */
+/* Mobile-specific fixes for button visibility - ensure controls fit on screen */
 @media (max-width: 767px) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom, 4px) !important;
+  }
+  
   .controls {
     position: relative !important;
     z-index: 1000 !important;
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
   
   .controls-row {
     display: flex !important;
     visibility: visible !important;
     opacity: 1 !important;
+    flex-wrap: wrap !important;
   }
   
   .ctrl-btn, .pill-btn {
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
+    flex-shrink: 0 !important;
+  }
+  
+  /* Ensure controls don't overflow on very small screens */
+  @media (max-height: 600px) {
+    .controls {
+      margin: 1px auto 1px !important;
+    }
+    
+    .controls-row {
+      gap: 2px !important;
+      margin: 1px 0 !important;
+    }
+    
+    .ctrl-btn, .pill-btn {
+      min-height: 30px !important;
+      padding: 3px 6px !important;
+      font-size: 11px !important;
+    }
   }
 }
 
