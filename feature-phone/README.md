@@ -12,7 +12,7 @@ This version is optimized for feature phones like JioPhone, JioPhone 2, and othe
 - ✅ Works on 2G/3G connections
 - ✅ KaiOS compatible
 
-## Controls
+##  Controls
 
 ### Numeric Keypad
 - **2**: Move UP ↑
