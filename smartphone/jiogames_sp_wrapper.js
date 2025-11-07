@@ -103,6 +103,8 @@ window.onAdClosed = function (data, pIsVideoCompleted, pIsEligibleForReward) {
     if (adSpotKey == adSpotRewardedVideo && isEligibleForReward) {
         GratifyReward();
     }    
+    // After an ad closes, try to cache the next ads (both interstitial and rewarded) - like Space Battle
+    try { gameCacheAd(); } catch(e) { console.warn('JioGames: gameCacheAd call failed', e); }
 };
 
 window.onAdFailedToLoad = function (data, pDescription){
