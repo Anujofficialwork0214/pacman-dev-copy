@@ -1,4 +1,4 @@
-# Pacman - Feature Phone Version (JioPhone/KaiOS)
+#  Pacman - Feature Phone Version (JioPhone/KaiOS)
 
 ## Overview
 This version is optimized for feature phones like JioPhone, JioPhone 2, and other KaiOS devices with D-pad navigation.
