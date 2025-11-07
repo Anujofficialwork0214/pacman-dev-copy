@@ -86,22 +86,38 @@ h1 {
   touch-action: none;
 }
 
-/* Mobile Controls - Compact for no scrolling */
+/* Mobile Controls - Show when game is playing, hide on home screen */
 .controls {
-  display: block;
+  display: block !important;
+  visibility: visible !important;
   margin: 6px auto 4px;
   max-width: 100%;
   padding: 0 8px;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  z-index: 100;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .controls-row {
-  display: flex;
+  display: flex !important;
+  visibility: visible !important;
   justify-content: center;
   gap: 8px;
   margin: 3px 0;
+  width: 100%;
+  flex-wrap: nowrap;
+  position: relative;
+  z-index: 101;
+}
+
+/* Top row for Sound and Pause buttons */
+.controls-top {
+  margin-bottom: 6px;
+  gap: 12px;
 }
 
 .ctrl-btn, .pill-btn {
@@ -118,6 +134,12 @@ h1 {
   cursor: pointer;
   transition: all 0.15s ease;
   touch-action: manipulation;
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative;
+  z-index: 101;
+  -webkit-tap-highlight-color: rgba(255, 255, 255, 0.3);
 }
 
 .ctrl-btn:active, .pill-btn:active {
@@ -137,12 +159,14 @@ h1 {
   background: linear-gradient(145deg, #ffaa00, #ffd700);
 }
 
-/* Pause and Sound buttons in middle row */
-.controls-row .pill-btn {
-  min-width: 65px;
-  min-height: 38px;
-  font-size: 11px;
-  padding: 6px 8px;
+/* Pause and Sound buttons in top row */
+.controls-top .pill-btn {
+  min-width: 80px;
+  min-height: 40px;
+  font-size: 12px;
+  padding: 8px 12px;
+  flex: 1;
+  max-width: 140px;
 }
 
 /* Responsive adjustments */
@@ -170,18 +194,35 @@ h1 {
   
   .controls {
     margin: 8px auto 6px;
+    padding: 0 4px;
+    width: 100%;
+    display: block !important;
+    visibility: visible !important;
   }
   
   .ctrl-btn, .pill-btn {
-    min-width: 48px;
-    min-height: 40px;
-    font-size: 16px;
-    padding: 6px 10px;
+    min-width: 50px;
+    min-height: 44px;
+    font-size: 14px;
+    padding: 8px 10px;
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+  
+  .controls-top .pill-btn {
+    min-width: 70px;
+    min-height: 44px;
+    font-size: 11px;
+    padding: 8px 10px;
+    flex: 1;
+    max-width: 130px;
   }
   
   .controls-row { 
-    gap: 8px;
-    margin: 4px 0;
+    gap: 6px;
+    margin: 3px 0;
+    display: flex !important;
+    visibility: visible !important;
   }
 }
 
@@ -189,26 +230,66 @@ h1 {
 @media (min-width: 376px) and (max-width: 414px) {
   h1 { font-size: 24px; }
   
-  .ctrl-btn, .pill-btn {
-    min-width: 64px;
-    min-height: 50px;
-    font-size: 18px;
+  .controls {
+    display: block !important;
+    visibility: visible !important;
+    width: 100%;
   }
   
-  .controls-row { gap: 12px; }
+  .ctrl-btn, .pill-btn {
+    min-width: 60px;
+    min-height: 44px;
+    font-size: 16px;
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+  
+  .controls-top .pill-btn {
+    min-width: 85px;
+    min-height: 40px;
+    font-size: 11px;
+    flex: 1;
+    max-width: 130px;
+  }
+  
+  .controls-row { 
+    gap: 10px;
+    display: flex !important;
+    visibility: visible !important;
+  }
 }
 
 /* Large phones (415px - 767px) */
 @media (min-width: 415px) and (max-width: 767px) {
   h1 { font-size: 26px; }
   
-  .ctrl-btn, .pill-btn {
-    min-width: 70px;
-    min-height: 54px;
-    font-size: 20px;
+  .controls {
+    display: block !important;
+    visibility: visible !important;
+    width: 100%;
   }
   
-  .controls-row { gap: 14px; }
+  .ctrl-btn, .pill-btn {
+    min-width: 68px;
+    min-height: 50px;
+    font-size: 18px;
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+  
+  .controls-top .pill-btn {
+    min-width: 105px;
+    min-height: 46px;
+    font-size: 12px;
+    flex: 1;
+    max-width: 140px;
+  }
+  
+  .controls-row { 
+    gap: 12px;
+    display: flex !important;
+    visibility: visible !important;
+  }
 }
 
 /* Tablets (768px+) */
@@ -322,21 +403,27 @@ h1 {
     grid-column: 2;
     grid-row: 2;
     margin: 0;
-    display: flex;
+    display: flex !important;
+    visibility: visible !important;
     flex-direction: column;
     justify-content: center;
     max-width: 100%;
+    width: 100%;
   }
   
   .ctrl-btn, .pill-btn {
     min-width: 60px;
     min-height: 50px;
     font-size: 18px;
+    display: inline-block !important;
+    visibility: visible !important;
   }
   
   .controls-row {
     gap: 10px;
     margin: 4px 0;
+    display: flex !important;
+    visibility: visible !important;
   }
 }
 
@@ -364,6 +451,50 @@ h1 {
   body {
     padding-top: max(var(--pad), env(safe-area-inset-top));
     padding-bottom: max(var(--pad), env(safe-area-inset-bottom));
+  }
+}
+
+/* Hide controls when home screen is visible */
+body.home-visible .controls {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Show controls when home screen is hidden (game playing) */
+body:not(.home-visible) .controls {
+  display: block !important;
+  visibility: visible !important;
+}
+
+/* Ensure buttons are always visible and clickable */
+.ctrl-btn, .pill-btn {
+  pointer-events: auto !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Mobile-specific fixes for button visibility */
+@media (max-width: 767px) {
+  .controls {
+    position: relative !important;
+    z-index: 1000 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .controls-row {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .ctrl-btn, .pill-btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
   }
 }
 

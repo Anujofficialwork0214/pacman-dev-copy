@@ -839,19 +839,11 @@ var PACMAN = (function () {
         map.reset();
         map.draw(ctx);
         
-        // Cache ads at game start per guidelines (midroll + rewarded after 5s)
+        // Cache ads at game start (mid-roll + rewarded) - direct call like Space Battle
         try {
-            if (typeof cacheAd === 'function') {
-                cacheAd();
-                console.log("Pacman: Caching midroll ad");
-            }
-            if (typeof cacheAdRewarded === 'function') {
-                setTimeout(function(){
-                    cacheAdRewarded();
-                    console.log("Pacman: Caching rewarded ad (delayed 5s)");
-                }, 5000);
-            }
-        } catch(e) {}
+            gameCacheAd();
+            console.log("Pacman: Ads caching at game start (mid-roll + rewarded)");
+        } catch(e) { console.log(e); }
         
         startLevel();
     }
@@ -861,10 +853,16 @@ var PACMAN = (function () {
             startNewGame();
         } else if (e.keyCode === KEY.S) {
             // Toggle sound state first
-            localStorage["soundDisabled"] = String(!soundDisabled());
+            var wasDisabled = soundDisabled();
+            localStorage["soundDisabled"] = String(!wasDisabled);
             // If sound is now disabled, stop all currently playing sounds
             if (soundDisabled()) {
                 audio.disableSound();
+            } else {
+                // If sound is now enabled, resume music if game is playing
+                if (state === PLAYING || state === COUNTDOWN) {
+                    audio.resume();
+                }
             }
         } else if ((e.keyCode === KEY.P || e.keyCode === KEY.ENTER) && state === PAUSE) {
             // Resume on Enter or P button
@@ -901,19 +899,20 @@ var PACMAN = (function () {
             console.log("Pacman: Game Over - Score: " + finalScore + ", Level: " + level);
 
             try {
-                if (typeof window !== 'undefined' && window.isRVReady === true && typeof showAdRewarded === 'function') {
+                // Direct calls like Space Battle (no typeof checks)
+                if (window.isRVReady === true) {
                     var wants = window.confirm('Continue with an extra life by watching a video?');
                     if (wants) {
                         showAdRewarded();
                     } else {
-                        if (typeof postScore === 'function') { postScore(finalScore); }
-                        if (typeof showAd === 'function') { setTimeout(function(){ showAd(); }, 500); }
+                        postScore(finalScore);
+                        setTimeout(function(){ showAd(); }, 500);
                     }
                 } else {
-                    if (typeof postScore === 'function') { postScore(finalScore); }
-                    if (typeof showAd === 'function') { setTimeout(function(){ showAd(); }, 500); }
+                    postScore(finalScore);
+                    setTimeout(function(){ showAd(); }, 500);
                 }
-            } catch(e) {}
+            } catch(e) { console.log(e); }
         }
     }
 
@@ -1082,25 +1081,21 @@ var PACMAN = (function () {
         map.draw(ctx);
         dialog("🎉 Congratulations! Level " + (level - 1) + " Complete!");
 
-        // Show interstitial ad after each level completion (no rewarded ads)
+        // Show interstitial ad after each level completion (direct call like Space Battle)
         setTimeout(function() {
             try {
-                if (typeof showAd === 'function' && typeof window.isAdReady !== 'undefined' && window.isAdReady === true) {
-                    showAd();
-                    console.log("Pacman: Interstitial shown after level complete");
-                } else if (typeof cacheAd === 'function') {
-                    cacheAd();
-                    console.log("Pacman: Interstitial not ready after level complete, caching...");
-                }
-            } catch(e) {}
+                showAd();
+                console.log("Pacman: Interstitial shown after level complete");
+            } catch(e) { console.log(e); }
         }, 800);
         
+        // Start next level after message display (increased delay to prevent auto-close)
         setTimeout(function() {
             totalGhostsEaten = 0; // Reset ghost count for new level
             map.reset();
             user.newLevel();
             startLevel();
-        }, 2000); // Show message for 2 seconds
+        }, 3000); // Increased to 3 seconds to prevent auto-close bug
     };
 
     function keyPress(e) { 
@@ -1367,15 +1362,8 @@ $(function(){
   // JioGames SDK Integration - Initialize
   console.log("Pacman: Initializing JioGames SDK...");
   
-  // Get user profile on game initialization
-  if (typeof getUserProfile === 'function') {
-    try { getUserProfile(); console.log("Pacman: getUserProfile() called"); } catch(e) {}
-  }
-
-  // Load banner on init
-  if (typeof loadBanner === 'function') {
-    try { loadBanner(); } catch(e) {}
-  }
+  // Note: getUserProfile and loadBanner are called from index.html on page load
+  // No need to call here to avoid duplicate calls
 
   if (Modernizr.canvas && Modernizr.localstorage && 
       Modernizr.audio && (Modernizr.audio.ogg || Modernizr.audio.mp3)) {
